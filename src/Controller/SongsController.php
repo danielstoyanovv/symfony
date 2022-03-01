@@ -17,25 +17,16 @@ use App\Entity\RatingData;
 class SongsController extends AbstractController
 {
     /**
+     * index
+     * @param Request $request
+     * @param ManagerRegistry $doctrine
+     * @return Response
+     * 
      * @Route("/songs", name="app_songs")
      */
     public function index(Request $request, ManagerRegistry $doctrine): Response
     {
         $entityManager = $doctrine->getManager('default');
-        //$result = $entityManager->createQueryBuilder()
-          //  ->select('s.id, s.name') // string 'u' is converted to array internally
-          //  ->from("song", 's')
-       // ;
-       // var_dump($result->getQuery()->getResult());
-        //var_dump($result->getDql()); die;
-        //$result = $entityManager->createQuery('select name from `song`');
-
-       // var_dump($result->getResult()); die;
-
-       
-
-     //   var_dump($result->getQuery()->getResult()); die;
-        
         return $this->render('songs/index.html.twig', [
             'rateData' => $this->getRateData($doctrine),
             'songs' => $entityManager->getRepository(Song::class)->findAll(),
