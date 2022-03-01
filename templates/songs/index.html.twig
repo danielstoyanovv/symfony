@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SongsController!{% endblock %}
+
+{% block body %}
+    <p><a href="songs_vote">{{ 'Rate a song' }}</a></p>
+    {% for song in songs %}
+    <p>
+        {{ song.name|e }} -
+        {% if rateData[song.id] is defined and rateData[song.id] is not null %}
+            <b>{{ 'Rating' }}: ({{ rateData[song.id].avg_rating|number_format(1) }}/10)</b>
+            <b>{{ 'Voters' }}: {{ rateData[song.id].count }}</b>
+        {% endif %}
+    </p>
+    {% endfor %}
+{% endblock %}
+
