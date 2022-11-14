@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @method Song|null find($id, $lockMode = null, $lockVersion = null)
@@ -45,32 +46,27 @@ class SongRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Song[] Returns an array of Song objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * get rate data
+     * @param EntityManagerInterface $doctrine
+     * @return array
+     */
+    public function getSongsRateData(EntityManagerInterface $entityManager): array
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $result = $entityManager->getConnection()->fetchAllAssociative('
+            SELECT song.id,  AVG(rating_data.rating) as avg_rating, COUNT(rating_data.song_id) AS count
+            FROM song 
+            JOIN rating_data
+            WHERE song.id = rating_data.song_id
+            GROUP BY song.id
+        ');
+        $rateResult = [];
+        if ($result) {
+            foreach ($result as $rate) {
+                $rateResult[$rate['id']] = $rate;
+            }
+        }
+        return $rateResult;
 
-    /*
-    public function findOneBySomeField($value): ?Song
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
     }
-    */
 }

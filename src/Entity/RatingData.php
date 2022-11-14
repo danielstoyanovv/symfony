@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\RatingDataRepository;
 use Doctrine\ORM\Mapping as ORM;
+use \App\Entity\Song;
 
 /**
  * @ORM\Entity(repositoryClass=RatingDataRepository::class)
@@ -35,12 +36,13 @@ class RatingData
     /**
      * @ORM\Column(type="integer", length=10)
      */
-    private $rating; 
-    
+    private $rating;
+
     /**
-     * @ORM\Column(type="integer", length=10)
+     * @ORM\ManyToOne(targetEntity=Song::class, inversedBy="ratingData")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $song_id; 
+    private $song;
 
     public function getId(): ?int
     {
@@ -107,23 +109,15 @@ class RatingData
         return $this;
     }
 
-     /**
-     * get name
-     * @return string
-     */
-    public function getSongId(): string
+    public function getSong(): ?Song
     {
-        return $this->song_id;
+        return $this->song;
     }
 
-    /**
-     * set name
-     * @param string $song_id
-     * @return $this
-     */
-    public function setSongId(string $song_id)
+    public function setSong(?Song $song): self
     {
-        $this->song_id = $song_id;
+        $this->song = $song;
+
         return $this;
     }
 }
