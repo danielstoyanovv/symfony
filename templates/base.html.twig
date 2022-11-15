@@ -1,19 +1,109 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}Welcome!{% endblock %}</title>
+
+    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+
+    <!-- CSS FILES -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="css/templatemo-kind-heart-charity.css" rel="stylesheet">
+</head>
+<body id="section_1">
+
+{{ include('page/header.html.twig') }}
+
+<nav class="navbar navbar-expand-lg bg-light shadow-lg">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <img src="images/logo.png" class="logo img-fluid" alt="Kind Heart Charity">
+            <span>
+                        Kind Heart Charity
+                        <small>Non-profit Organization</small>
+                    </span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link click-scroll" href="#top">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link click-scroll" href="#section_2">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link click-scroll" href="#section_3">Causes</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link click-scroll" href="#section_4">Volunteer</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link click-scroll dropdown-toggle" href="#section_5" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">News</a>
+
+                    <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                        <li><a class="dropdown-item" href="news.html">News Listing</a></li>
+
+                        <li><a class="dropdown-item" href="news-detail.html">News Detail</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link click-scroll" href="#section_6">Contact</a>
+                </li>
+
+                <li class="nav-item ms-3">
+                    <a class="nav-link custom-btn custom-border-btn btn" href="donate.html">Donate</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main>
+    <section class="section-padding">
+        <div class="container">
+            <div class="row">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+    </section>
+    {{ include('page/footer.html.twig') }}
+</main>
+
+<!-- JAVASCRIPT FILES -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.sticky.js"></script>
+<script src="js/click-scroll.js"></script>
+<script src="js/counter.js"></script>
+<script src="js/custom.js"></script>
+</body>
 </html>
