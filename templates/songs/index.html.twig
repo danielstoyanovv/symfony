@@ -24,6 +24,8 @@
                 <b>{{ 'Voters' }}: {{ rateData[song.id].count }}</b>
             {% endif %}
         </li>
+        {% else %}
+            {{ 'The are no songs' }}
         {% endfor %}
     </ul>
 
