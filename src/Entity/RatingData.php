@@ -8,10 +8,6 @@ use \App\Entity\Song;
 
 /**
  * @ORM\Entity(repositoryClass=RatingDataRepository::class)
- */
-
-/**
- * @ORM\Entity
  * @ORM\Table(name="rating_data")
  */
 class RatingData

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Home page' }}{% endblock %}
+
+{% block body %}
+    {% if rateData %}
+        {{ 'Last 5 top rated songs' }}
+        <ul class="list-group">
+            {% for rate in rateData %}
+                <li class="list-group-item">
+                    {{ rate.song_name|e }} -
+                    {% if rateData[rate.id] is defined and rateData[rate.id] is not null %}
+                        <b>{{ 'Rating' }}: ({{ rateData[rate.id].avg_rating|number_format(1) }}/10)</b>
+                        <b>{{ 'Voters' }}: {{ rateData[rate.id].count }}</b>
+                    {% endif %}
+                </li>
+            {% else %}
+                {{ 'The are no rates' }}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
