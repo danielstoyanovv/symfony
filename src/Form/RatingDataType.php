@@ -16,9 +16,9 @@ class RatingDataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('customer_name', TextType::class)
-            ->add('customer_email', EmailType::class)
-            ->add('rating', ChoiceType::class, array(
+            ->add('customerName', TextType::class)
+            ->add('customerEmail', EmailType::class)
+            ->add('rating', ChoiceType::class, [
                 'choices' =>  [
                     1 => 1,
                     2 => 2,
@@ -32,7 +32,7 @@ class RatingDataType extends AbstractType
                     10 => 10
                 ],
                 'multiple' => false
-            ))
+            ])
             ->add('song')
             ->add('send', SubmitType::class);
     }

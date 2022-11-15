@@ -8,6 +8,7 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Song|null find($id, $lockMode = null, $lockVersion = null)
@@ -67,6 +68,23 @@ class SongRepository extends ServiceEntityRepository
             }
         }
         return $rateResult;
+    }
 
+    /**
+     * @param array $filters
+     * @return QueryBuilder
+     */
+    public function filtered(array $filters = []): QueryBuilder
+    {
+        $builder = $this
+            ->createQueryBuilder('song')
+            ->orderBy('song.id', 'desc');
+
+        if (!empty($filters['name'])) {
+            $builder->andWhere('song.name LIKE :name')
+                ->setParameter('name', "%{$filters['name']}%");
+        }
+
+        return $builder;
     }
 }

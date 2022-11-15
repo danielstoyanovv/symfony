@@ -4,17 +4,32 @@
 
 {% block body %}
 {% if songs is defined and songs is not null %}
-    <p><a href="songs_vote">{{ 'Rate a song' }}</a></p>
+    <form method="get">
+        <div class="mb-3 mt-3">
+            <label for="name">{{ 'Search for a song' }}</label>
+            <a href="{{ path('app_songs') }}" class="btn btn-light" role="button">{{ 'Clear filter' }}</a>
+        </div>
+            <input type="text" value="{{ app.request.query.get('name') }}" name="name" placeholder="{{ 'Song name' }}" />
+        <input type="submit" value="{{ 'Search' }}" />
+    </form>
+
+    <p><a href="{{ path('app_songs_vote') }}">{{ 'Rate a song' }}</a></p>
     <h3>{{ 'Last mounth top songs list' }}</h3>
-    {% for song in songs %}
-    <p>
-        {{ song.name|e }} -
-        {% if rateData[song.id] is defined and rateData[song.id] is not null %}
-            <b>{{ 'Rating' }}: ({{ rateData[song.id].avg_rating|number_format(1) }}/10)</b>
-            <b>{{ 'Voters' }}: {{ rateData[song.id].count }}</b>
-        {% endif %}
-    </p>
-    {% endfor %}
+    <ul class="list-group">
+        {% for song in songs %}
+        <li class="list-group-item">
+            {{ song.name|e }} -
+            {% if rateData[song.id] is defined and rateData[song.id] is not null %}
+                <b>{{ 'Rating' }}: ({{ rateData[song.id].avg_rating|number_format(1) }}/10)</b>
+                <b>{{ 'Voters' }}: {{ rateData[song.id].count }}</b>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div class="navigation">
+        {{ knp_pagination_render(songs) }}
+    </div>
 {% endif %}
 {% endblock %}
 

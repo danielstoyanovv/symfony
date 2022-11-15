@@ -5,6 +5,20 @@
 {% block body %}
     <h3>{{ 'Please rate you favourite song!' }}</h3>
     {{ form_start(form) }}
+        <div class="mb-3 mt-3">
+            {{ form_row(form.customerName, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="input-group mb-3">
+           {{ form_row(form.customerEmail) }}
+            <span class="input-group-text" id="basic-addon2">myPrivateEmailname@example.com</span>
+        </div>
+    <div class="mb-3 mt-3">
+        {{ form_row(form.rating, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3 mt-3">
+        {{ form_row(form.song, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
     {{ form_end(form) }}
 {% endblock %}
 
