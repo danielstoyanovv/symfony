@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Contacts page' }}{% endblock %}
+
+{% block body %}
+
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_row(form.firstName, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.familyName, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+            <div id="emailHelp" class="form-text">{{ "We'll never share your email with anyone else." }}</div>
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.question, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.file, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    {{ form_row(form.send, {'attr': {'class': 'form-control'}}) }}
+    {{ form_end(form) }}
+
+{% endblock %}
+
