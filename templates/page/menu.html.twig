@@ -23,8 +23,14 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_songs_vote') }}">{{ 'Rate a song' }}</a>
+                    <a class="nav-link" href="{{ path('app_contacts_page') }}">{{ 'Contacts' }}</a>
                 </li>
+
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_songs_vote') }}">{{ 'Rate a song' }}</a>
+                    </li>
+                {% endif %}
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ app.user ? path('app_logout') : path('app_login') }}">{{ app.user ? 'Logout' : 'Login' }}</a>
@@ -34,9 +40,11 @@
                         <a class="nav-link" href="{{ path('app_register') }}">{{ 'Register' }}</a>
                     </li>
                 {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_contacts_page') }}">{{ 'Contacts' }}</a>
-                </li>
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_profile_page') }}">{{ 'My profile' }}</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

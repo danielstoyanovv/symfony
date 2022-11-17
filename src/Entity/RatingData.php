@@ -20,16 +20,6 @@ class RatingData
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=256)
-     */
-    private $customer_name;
-
-    /**
-     * @ORM\Column(type="string", length=256)
-     */
-    private $customer_email;
-
-    /**
      * @ORM\Column(type="integer", length=10)
      */
     private $rating;
@@ -40,49 +30,14 @@ class RatingData
      */
     private $song;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ratingData")
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * get name
-     * @return string
-     */
-    public function getCustomerName(): string
-    {
-        return $this->customer_name;
-    }
-
-    /**
-     * set name
-     * @param string $customer_name
-     * @return $this
-     */
-    public function setCustomerName(string $customer_name)
-    {
-        $this->customer_name = $customer_name;
-        return $this;
-    }
-
-    /**
-     * get name
-     * @return string
-     */
-    public function getCustomerEmail(): string
-    {
-        return $this->customer_email;
-    }
-
-    /**
-     * set name
-     * @param string $customer_email
-     * @return $this
-     */
-    public function setCustomerEmail(string $customer_email)
-    {
-        $this->customer_email = $customer_email;
-        return $this;
     }
 
     /**
@@ -113,6 +68,18 @@ class RatingData
     public function setSong(?Song $song): self
     {
         $this->song = $song;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

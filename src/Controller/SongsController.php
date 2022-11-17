@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\RatingData;
 use App\Form\RatingDataType;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class SongsController extends AbstractController
 {
@@ -41,6 +42,7 @@ class SongsController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @IsGranted("ROLE_USER")
      * @Route("/songs_vote", name="app_songs_vote")
      */
     public function vote(Request $request, EntityManagerInterface $entityManager): Response
@@ -51,7 +53,7 @@ class SongsController extends AbstractController
             $form->handleRequest($request);
                 
             if ($form->isSubmitted() && $form->isValid()) {
-
+                $rating->setUser($this->getUser());
                 $entityManager->persist($rating);
                 $entityManager->flush();
                 $this->addFlash(

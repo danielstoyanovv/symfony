@@ -16,8 +16,6 @@ class RatingDataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('customerName', TextType::class)
-            ->add('customerEmail', EmailType::class)
             ->add('rating', ChoiceType::class, [
                 'choices' =>  [
                     1 => 1,

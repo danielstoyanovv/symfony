@@ -38,6 +38,11 @@
                     <li class="social-icon-item">
                         <a href="#" class="social-icon-link bi-whatsapp"></a>
                     </li>
+                    {% if app.user %}
+                        <li class="social-icon-item">
+                            <small>{{ 'Logged in as' }}: {{ app.user.name }}</small>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
 
