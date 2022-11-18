@@ -10,7 +10,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Song;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\RatingData;
-use App\Form\RatingDataType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Psr\Log\LoggerInterface;
