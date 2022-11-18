@@ -9,13 +9,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * @IsGranted("ROLE_USER")
+ * @Route("/profile")
+ */
 class ProfileController extends AbstractController
 {
     /**
      * index
      * @return Response
-     * @IsGranted("ROLE_USER")
-     * @Route("/profile", name="app_profile_page", methods={"GET"})
+     * @Route("", name="app_profile_page", methods={"GET"})
      */
     public function index(): Response
     {
@@ -26,7 +29,6 @@ class ProfileController extends AbstractController
     /**
      * index
      * @return Response
-     * @IsGranted("ROLE_USER")
      * @Route("/songs_voted_for", name="app_profile_songs_voted_for_page", methods={"GET"})
      */
     public function songsVotedFor(EntityManagerInterface $entityManager): Response

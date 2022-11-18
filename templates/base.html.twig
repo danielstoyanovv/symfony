@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>{% block title %}Welcome{% endblock %}</title>
 
     {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
     {% block stylesheets %}
@@ -19,11 +19,11 @@
     {% endblock %}
 
     <!-- CSS FILES -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
-    <link href="css/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/bootstrap-icons.css" rel="stylesheet">
 
-    <link href="css/templatemo-kind-heart-charity.css" rel="stylesheet">
+    <link href="/css/templatemo-kind-heart-charity.css" rel="stylesheet">
 </head>
 <body id="section_1">
 
@@ -42,16 +42,16 @@
                 {% endfor %}
                 {% block body %}{% endblock %}
             </div>
-        </div>
+        </div>s
     </section>
     {{ include('page/footer.html.twig') }}
 </main>
-
 <!-- JAVASCRIPT FILES -->
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.sticky.js"></script>
-<script src="js/counter.js"></script>
-<script src="js/custom.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.sticky.js"></script>
+<script src="/js/counter.js"></script>
+<script src="/js/custom.js"></script>
+<script src="/js/song-vote.js"></script>
 </body>
 </html>
