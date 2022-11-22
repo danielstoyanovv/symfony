@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\ContactsType;
-use App\Service\SendEmail;
+use \App\Service\SendWithTemplate;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -17,12 +17,13 @@ class ContactsController extends AbstractController
     /**
      * index
      * @param Request $request
+     * @param SendWithTemplate $sendEmail
      * @param LoggerInterface $logger
      * @param Filesystem $filesystem
      * @return Response
      * @Route("/contacts", name="app_contacts_page", methods={"GET", "POST"})
      */
-    public function index(Request  $request, SendEmail $sendEmail, LoggerInterface $logger, Filesystem $filesystem): Response
+    public function index(Request  $request, SendWithTemplate $sendEmail, LoggerInterface $logger, Filesystem $filesystem): Response
     {
         try {
             $form = $this->createForm(ContactsType::class);
@@ -42,7 +43,7 @@ class ContactsController extends AbstractController
                     }
                 }
 
-                $sendEmail->sendWithTemplate(
+                $sendEmail->send(
                     $form->get('email')->getData(),
                     'owner@abv.bg',
                     'Contact form',

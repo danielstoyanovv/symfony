@@ -6,7 +6,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
-class SendEmail
+class SendWithTemplate implements SendEmailInterface
 {
     /**
      * @var MailerInterface
@@ -27,7 +27,7 @@ class SendEmail
      * @return void
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function sendWithTemplate(string $from, string $to, string $subject, string $templateName, array $templateVars = null, File $file = null)
+    public function send(string $from, string $to, string $subject, string $templateName, array $templateVars = null, File $file = null): void
     {
         $email = (new TemplatedEmail())
             ->from($from)
