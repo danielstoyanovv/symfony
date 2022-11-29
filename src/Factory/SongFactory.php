@@ -43,15 +43,6 @@ final class SongFactory extends ModelFactory
         ];
     }
 
-    public function data()
-    {
-        return [
-            'name' => self::faker()->text(),
-            'createdAt' => new \DateTime('now'),
-            'updatedAt' => new \DateTime('now')
-        ];
-    }
-
     protected function initialize(): self
     {
         // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
