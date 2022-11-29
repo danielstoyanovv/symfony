@@ -17,7 +17,11 @@
     <ul class="list-group">
         {% for song in songs %}
             <li class="list-group-item">
-            {{ song.name|e }} -
+            {{ song.name|e }}
+            {% if song.author %}
+                ({{ song.author }})
+            {% endif %}
+            -
             {% if rateData[song.id] is defined and rateData[song.id] is not null %}
                 <b>{{ 'Rating' }}: ({{ rateData[song.id].avg_rating|number_format(1) }}/10)</b>
                 <b>{{ 'Voters' }}: {{ rateData[song.id].count }}</b>

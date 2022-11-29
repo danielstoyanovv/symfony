@@ -49,7 +49,7 @@ class RatingDataRepository extends ServiceEntityRepository
     public function getTopRatedData(EntityManagerInterface $entityManager): array
     {
         $result = $entityManager->getConnection()->fetchAllAssociative('
-         SELECT song.id, song.name as song_name, AVG(rating_data.rating) as avg_rating, COUNT(rating_data.song_id) AS count
+         SELECT song.id, song.name as song_name, author as song_author, AVG(rating_data.rating) as avg_rating, COUNT(rating_data.song_id) AS count
             FROM song
             JOIN rating_data
             WHERE song.id = rating_data.song_id

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class Paypal implements PaypalInterface
 {
@@ -13,13 +14,19 @@ class Paypal implements PaypalInterface
     private $client;
 
     /**
-     * @param UrlGeneratorInterface
+     * @var UrlGeneratorInterface
      */
     private $urlGenerator;
 
-    public function __construct(HttpClientInterface  $client, UrlGeneratorInterface $urlGenerator) {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    public function __construct(HttpClientInterface  $client, UrlGeneratorInterface $urlGenerator, EntityManagerInterface $entityManager) {
         $this->client = $client;
         $this->urlGenerator = $urlGenerator;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -33,16 +40,28 @@ class Paypal implements PaypalInterface
      */
     public function capture(string $orderId, string $paypalApiUrl, string $paypaAuthorizationCode): void
     {
-        $captureResponseJson = $this->client->request(
-            "POST",
-            $paypalApiUrl . "/v2/checkout/orders/" . $orderId .  "/capture",
-            [
-                "headers" => [
-                    "Content-Type" => "application/json",
-                    "Authorization" => "Bearer " . $this->getToken($paypalApiUrl, $paypaAuthorizationCode),
-                ],
-            ]
-        );
+        if ($token = $this->getToken($paypalApiUrl, $paypaAuthorizationCode)) {
+            $captureResponseJson = $this->client->request(
+                "POST",
+                $paypalApiUrl . "/v2/checkout/orders/" . $orderId .  "/capture",
+                [
+                    "headers" => [
+                        "Content-Type" => "application/json",
+                        "Authorization" => "Bearer " . $token,
+                    ],
+                ]
+            );
+
+            new ApiLogProvider(
+                'Paypal',
+                $paypalApiUrl . "/v2/checkout/orders/" . $orderId .  "/capture",
+                ' Content-Type application/json' .
+                ' Authorization Basic ' . $token,
+                $captureResponseJson->getContent(),
+                $captureResponseJson->getStatusCode(),
+                $this->entityManager
+            );
+        }
     }
 
     /**
@@ -73,6 +92,15 @@ class Paypal implements PaypalInterface
         if (!empty($tokenResponse['access_token'])) {
             $token = $tokenResponse['access_token'];
         }
+
+        new ApiLogProvider(
+            'Paypal',
+            $paypalApiUrl . '/v1/oauth2/token?grant_type=client_credentials',
+            'Authorization Basic ' . $paypaAuthorizationCode,
+            $tokenJsonResponse->getContent(),
+            $tokenJsonResponse->getStatusCode(),
+            $this->entityManager
+        );
 
         return $token;
     }
@@ -142,6 +170,17 @@ class Paypal implements PaypalInterface
         if (!empty($orderResponseJson->getContent())) {
             $result = json_decode($orderResponseJson->getContent(), true);
         }
+
+        new ApiLogProvider(
+            'Paypal',
+            $paypalApiUrl . "/v2/checkout/orders",
+            ' Content-Type application/json' .
+                    ' Authorization Bearer ' . $token .
+                    ' PayPal-Request-Id ' . $payPalRequestId,
+            $orderResponseJson->getContent(),
+            $orderResponseJson->getStatusCode(),
+            $this->entityManager
+        );
 
         return $result;
     }

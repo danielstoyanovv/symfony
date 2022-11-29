@@ -7,7 +7,13 @@
     <ul class="list-group">
         {% for rate in rateData %}
             <li class="list-group-item">
-                {{ rate.song.name|e }} - <b>{{ rate.rating}}</b>
+                {{ rate.song.name|e }}
+
+                {% if rate.song.author %}
+                    ({{ rate.song.author }})
+                {% endif %}
+
+                - <b>{{ rate.rating}}</b>
             </li>
         {% else %}
             {{ 'The are no songs' }}

@@ -77,8 +77,11 @@ class SongsController extends AbstractController
                             'Vote not created'
                         );
                     }
+                } else {
+                    throw $this->createNotFoundException(sprintf(
+                        'Song id: %s did not exists',
+                        $request->get('song')));
                 }
-
             }
         }
 

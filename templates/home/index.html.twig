@@ -9,7 +9,11 @@
             <ul class="list-group">
                 {% for rate in rateData %}
                     <li class="list-group-item">
-                        {{ rate.song_name|e }} -
+                        {{ rate.song_name|e }}
+                        {% if rate.song_author %}
+                            ({{ rate.song_author }})
+                        {% endif %}
+                        -
                         {% if rateData[rate.id] is defined and rateData[rate.id] is not null %}
                             <b>{{ 'Rating' }}: ({{ rateData[rate.id].avg_rating|number_format(1) }}/10)</b>
                             <b>{{ 'Voters' }}: {{ rateData[rate.id].count }}</b>
@@ -28,6 +32,9 @@
                 {% for song in lastAddedSongs %}
                     <li class="list-group-item">
                         {{ song.name|e }}
+                        {% if song.author %}
+                            ({{ song.author }})
+                        {% endif %}
                     </li>
                 {% else %}
                     {{ 'The are no songs' }}
