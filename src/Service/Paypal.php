@@ -32,15 +32,15 @@ class Paypal implements PaypalInterface
     /**
      * @param string $orderId
      * @param string $paypalApiUrl
+     * @param string $token
      * @return void
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function capture(string $orderId, string $paypalApiUrl, string $paypaAuthorizationCode): void
+    public function capture(string $orderId, string $paypalApiUrl, string $token): void
     {
-        if ($token = $this->getToken($paypalApiUrl, $paypaAuthorizationCode)) {
             $captureResponseJson = $this->client->request(
                 "POST",
                 $paypalApiUrl . "/v2/checkout/orders/" . $orderId .  "/capture",
@@ -61,7 +61,6 @@ class Paypal implements PaypalInterface
                 $captureResponseJson->getStatusCode(),
                 $this->entityManager
             );
-        }
     }
 
     /**

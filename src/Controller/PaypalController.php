@@ -8,8 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
 use App\Service\PaypalInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
+ * @IsGranted("ROLE_USER")
  * @Route("paypal")
  */
 class PaypalController extends AbstractController
@@ -42,7 +44,7 @@ class PaypalController extends AbstractController
         try {
             if ($request->get('token') && $request->get('PayerID')) {
                 $this->addFlash('success', 'The payment was successful');
-                $this->paypal->capture($request->get('token'), $paypalApiUrl, $paypaAuthorizationCode);
+                $this->paypal->capture($request->get('token'), $paypalApiUrl, $this->getToken($request, $paypalApiUrl, $paypaAuthorizationCode));
             }
         } catch (\Exception $exception) {
             $this->logger->error($exception->getMessage());
@@ -79,7 +81,7 @@ class PaypalController extends AbstractController
     {
         try {
             if ($request->getMethod() == 'POST' && !empty($request->get('price'))) {
-                if ($token = $this->paypal->getToken($paypalApiUrl, $paypaAuthorizationCode)) {
+                if ($token = $this->getToken($request, $paypalApiUrl, $paypaAuthorizationCode)) {
                     $orderResponse = $this->paypal->createOrder($token, $request->get('price'), $paypalApiUrl);
                     if (!empty($orderResponse['id'])) {
                         return $this->redirect($this->paypal->getCheckoutNowUrl($orderResponse['id'], $paypalUrl));
@@ -90,5 +92,27 @@ class PaypalController extends AbstractController
             $this->logger->error($exception->getMessage());
         }
         return $this->redirectToRoute('app_home_page');
+    }
+
+    /**
+     * @param Request $request
+     * @param string $paypalApiUrl
+     * @param string $paypaAuthorizationCode
+     * @return string
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    private function getToken(Request $request, string $paypalApiUrl, string $paypaAuthorizationCode): string
+    {
+        if ($request->getSession()->get('token')) {
+            return $request->getSession()->get('token');
+        }
+
+        $token = $this->paypal->getToken($paypalApiUrl, $paypaAuthorizationCode);
+        $request->getSession()->set('token', $token);
+
+        return  $token;
     }
 }
