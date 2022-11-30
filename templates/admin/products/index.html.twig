@@ -1,0 +1,63 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ 'Products' }}{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-10"></div>
+    <div class="col-md-2">
+        <a type="button" class="btn btn-success" href="{{ path('app_admin_products_create') }}">{{ 'Create product' }}</a>
+    </div>
+</div>
+<div class="col-md-12">
+    <h3>{{ 'Products' }}</h3>
+    <table class="table">
+        <thead>
+        <th>
+            {{ 'Id' }}
+        </th>
+        <th>
+            {{ 'Name' }}
+        </th>
+        <th>
+            {{ 'Price' }}
+        </th>
+        <th>
+            {{ 'Description' }}
+        </th>
+        <th>
+            {{ 'Action' }}
+        </th>
+        </thead>
+        <tbody>
+        {% for product in collection %}
+            <tr>
+                <td>
+                    {{ product.id }}
+                </td>
+                <td>
+                    {{ product.name }}
+                </td>
+                <td>
+                    {{ product.price }}
+                </td>
+                <td>
+                    {{ product.description }}
+                </td>
+                <td>
+                    <a type="button" class="btn btn-success" href="{{ path('app_admin_products_update', {'slug': product.slug}) }}">{{ 'Update' }}</a>
+                </td>
+            </tr>
+        {% else %}
+            {{ 'The are no products' }}
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <div class="navigation">
+        {{ knp_pagination_render(collection) }}
+    </div>
+</div>
+
+{% endblock %}
+

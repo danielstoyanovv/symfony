@@ -1,0 +1,22 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ 'Create product' }}{% endblock %}
+
+{% block body %}
+    <h3>{{ 'Create product' }}</h3>
+    {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.price, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.submit, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
+

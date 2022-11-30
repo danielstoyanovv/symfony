@@ -4,8 +4,9 @@ namespace App\DataFixtures;
 
 use Doctrine\Persistence\ObjectManager;
 use App\Factory\SongFactory;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 
-class SongsFixtures extends AppFixtures
+class SongsFixtures extends Fixture
 {
     /**
      * @param ObjectManager $manager

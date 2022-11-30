@@ -1,0 +1,9 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ 'Admin' }}{% endblock %}
+
+{% block body %}
+    <h3>{{ 'Welcome'}} {{ app.user.name }}</h3>
+    <small>{{ 'Your email' }}: {{ app.user.email }}</small>
+{% endblock %}
+

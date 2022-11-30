@@ -36,7 +36,11 @@
                 {% endif %}
                 {% if app.user %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_profile_page') }}">{{ 'My profile' }}</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="nav-link" href="{{ path('app_admin_page') }}">{{ 'Admin' }}</a>
+                        {% else %}
+                            <a class="nav-link" href="{{ path('app_profile_page') }}">{{ 'My profile' }}</a>
+                        {% endif %}
                     </li>
                 {% endif %}
             </ul>
