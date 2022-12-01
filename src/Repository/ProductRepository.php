@@ -82,7 +82,8 @@ class ProductRepository extends ServiceEntityRepository
     public function filtered(array $filters = []): QueryBuilder
     {
         $builder = $this
-            ->createQueryBuilder('product');
+            ->createQueryBuilder('product')
+            ->addOrderBy('product.position', 'asc');
 
         if (!empty($filters['name'])) {
             $builder->andWhere('product.name LIKE :name')

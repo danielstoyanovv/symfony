@@ -24,31 +24,39 @@
     <link href="/css/bootstrap-icons.css" rel="stylesheet">
 
     <link href="/css/templatemo-kind-heart-charity.css" rel="stylesheet">
+
+    <link href="/css/menu.css" rel="stylesheet">
+
 </head>
-<body id="section_1">
+<body>
 
-{{ include('page/admin_nav.html.twig') }}
+<div class="container-fluid">
+    {{ include('page/header.html.twig') }}
 
-<main>
-    <section class="section-padding">
-        <div class="container">
-            <div class="row">
-                {% for message in app.flashes('success') %}
-                    <div class="alert alert-success">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-                {% block body %}{% endblock %}
-            </div>
+    <div class="row mt-5">
+        <div class="col-md-2">
+            {{ include('page/admin_nav.html.twig') }}
         </div>
-    </section>
+        <div class="col-md-10">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% block body %}{% endblock %}
+        </div>
+    </div>
 
-</main>
+</div>
+
 <!-- JAVASCRIPT FILES -->
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/jquery.sticky.js"></script>
 <script src="/js/counter.js"></script>
 <script src="/js/custom.js"></script>
+<script src="/js/menu.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="/js/add-sort.js"></script>
 </body>
 </html>

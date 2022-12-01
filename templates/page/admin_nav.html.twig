@@ -1,20 +1,15 @@
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <div class="container-fluid">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_admin_page') }}">{{ 'Admin' }}</a>|
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_admin_products') }}">{{ 'Products' }}</a>|
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ path('app_home_page') }}">{{ 'Return to site' }}</a>
-            </li>
-        </ul>
-        <div class="float-right">
-            <a href="{{ path('app_home_page') }}">
-                <img src="/images/logo.png" class="logo img-fluid" alt="Kind Heart Charity">
-            </a>
-        </div>
-    </div>
+<nav class='bg-dark'>
+    <ul>
+        <li><a href='{{ path('app_admin_page') }}'>{{ 'Dashboard' }}</a></li>
+        <li class='sub-menu'><a href='#products'>{{ 'Products' }}<div class='fa fa-caret-down right'></div></a>
+            <ul id="products">
+                <li><a href='{{ path('app_admin_products') }}'>{{ 'View all' }}</a></li>
+                <li><a href='{{ path('app_admin_products_create') }}'>{{ 'Create' }}</a></li>
+                <li><a href='{{ path('app_admin_products_create_position') }}'>{{ 'Add position' }}</a></li>
+            </ul>
+        </li>
+        <li><a href='{{ path('app_home_page') }}'>{{ 'Home' }}</a></li>
+
+        <li><a href='{{ path('app_logout') }}'>{{ 'Logout' }}</a></li>
+    </ul>
 </nav>
