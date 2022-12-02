@@ -1,0 +1,19 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ 'Api logs' }}{% endblock %}
+
+{% block body %}
+    <h3>{{ 'Log details' }}</h3>
+    <p>{{ 'Name' }}:</p>
+    <p>{{ apiLog.apiName }}</p>
+    <p>{{ 'Request url' }}:</p>
+    <p>{{ apiLog.requestUrl }}</p>
+    <p>{{ 'Request headers' }}:</p>
+    <p>{{ apiLog.requestHeaders }}</p>
+    <p>{{ 'Response data' }}: </p>
+    <p>{{ apiLog.responseData }}</p>
+    <p>{{ 'Response code' }}: </p>
+    <p>{{ apiLog.responseCode }}</p>
+
+    <a class="btn btn-warning" href="{{ path('app_admin_api_logs') }}">{{ 'Back' }}</a>
+{% endblock %}

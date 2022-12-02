@@ -1,0 +1,49 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ 'Api logs' }}{% endblock %}
+
+{% block body %}
+<h3>{{ 'Api logs' }}</h3>
+    <table class="table">
+        <thead>
+        <th>
+            {{ 'Id' }}
+        </th>
+        <th>
+            {{ 'Api name' }}
+        </th>
+        <th>
+            {{ 'Request url' }}
+        </th>
+        <th>
+            {{ 'Status code' }}
+        </th>
+        </thead>
+        <tbody>
+            {% for log in collection %}
+                <tr>
+                    <td>
+                        {{ log.id }}
+                    </td>
+                    <td>
+                        {{ log.apiName }}
+                    </td>
+                    <td>
+                        {{ log.requestUrl }}
+                    </td>
+                    <td>
+                        {{ log.responseCode }}
+                    </td>
+                    <td>
+                        <a type="button" class="btn btn-success" href="{{ path('app_admin_api_logs_details', {'id': log.id}) }}">{{ 'Details' }}</a>
+                    </td>
+                </tr>
+            {% else %}
+                {{ 'The are no api logs' }}
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation">
+        {{ knp_pagination_render(collection) }}
+    </div>
+{% endblock %}

@@ -6,6 +6,7 @@ use App\Entity\ApiLog;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -73,4 +74,22 @@ class ApiLogRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * @param array $filters
+     * @return QueryBuilder
+     */
+    public function filtered(array $filters = []): QueryBuilder
+    {
+        $builder = $this
+            ->createQueryBuilder('api_log')
+            ->addOrderBy('api_log.id', 'desc');
+
+        if (!empty($filters['api_name'])) {
+            $builder->andWhere('api_log.apiName LIKE :name')
+                ->setParameter('name', "%{$filters['api_name']}%");
+        }
+
+        return $builder;
+    }
 }

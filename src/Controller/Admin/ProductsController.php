@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Form\ProductType;
 use \Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Service\UploaderInterface;
 
 /**
  * @IsGranted("ROLE_ADMIN")
@@ -46,10 +47,11 @@ class ProductsController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @param LoggerInterface $logger
+     * @param UploaderInterface $uploader
      * @return Response
      * @Route("/create", name="app_admin_products_create", methods={"GET", "POST"})
      */
-    public function create(Request $request, EntityManagerInterface $manager, LoggerInterface $logger): Response
+    public function create(Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader): Response
     {
         try {
             $product = new Product();
@@ -59,6 +61,11 @@ class ProductsController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                if ($form->get('image')->getData()) {
+                    if ($image = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'))) {
+                        $product->addImage($image);
+                    }
+                }
                 $manager->persist($product);
                 $manager->flush();
 
@@ -81,10 +88,11 @@ class ProductsController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @param LoggerInterface $logger
+     * @param UploaderInterface $uploader
      * @return Response
      * @Route("/update/{slug}", name="app_admin_products_update", methods={"GET", "POST"})
      */
-    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger): Response
+    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader): Response
     {
         try {
             $form = $this->createForm(ProductType::class, $product);
@@ -92,6 +100,11 @@ class ProductsController extends AbstractController
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                if ($form->get('image')->getData()) {
+                    if ($image = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'))) {
+                        $product->addImage($image);
+                    }
+                }
                 $manager->flush();
 
                 $this->addFlash('success', "Product was updated");

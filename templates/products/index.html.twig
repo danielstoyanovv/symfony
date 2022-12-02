@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Products' }}{% endblock %}
+
+{% block body %}
+    <h3>{{ 'Products' }}</h3>
+
+        {% for product in collection %}
+            <div class="w-25 border">
+                <p class="text-center">{{ product.name }}</p>
+                <p>{{ 'Description' }} <span class="fw-bold">{{ product.description }}</span></p>
+                <p>{{ 'Price' }} <span class="fw-bold">{{ product.price }}</span></p>
+            </div>
+
+        {% else %}
+            {{ 'The are no products' }}
+        {% endfor %}
+
+    <div class="navigation">
+        {{ knp_pagination_render(collection) }}
+    </div>
+
+{% endblock %}
+
