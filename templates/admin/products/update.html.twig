@@ -17,6 +17,13 @@
         <div class="mb-3">
             {{ form_row(form.image, {'attr': {'class': 'form-control'}}) }}
         </div>
+
+        {% if product.image %}
+            {% for image in product.image  %}
+               <img src=" {{ get_product_image(image) }}" width="200px" />
+            {% endfor %}
+        {% endif %}
+
         <div class="mb-3">
             {{ form_row(form.submit, {'attr': {'class': 'form-control'}}) }}
         </div>

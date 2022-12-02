@@ -7,11 +7,19 @@
 
         {% for product in collection %}
             <div class="w-25 border">
-                <p class="text-center">{{ product.name }}</p>
-                <p>{{ 'Description' }} <span class="fw-bold">{{ product.description }}</span></p>
-                <p>{{ 'Price' }} <span class="fw-bold">{{ product.price }}</span></p>
+                <div class="col text-center">
+                    {% if product.image %}
+                        {% for image  in product.image  %}
+                            <img class="text-center" src=" {{ get_product_image(image) }}" width="300px" />
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="col text-center">
+                    <p>{{ product.name }}</p>
+                    <p>{{ product.description }}</p>
+                    <span class="fw-bold">{{ product.price }}</span>
+                </div>
             </div>
-
         {% else %}
             {{ 'The are no products' }}
         {% endfor %}

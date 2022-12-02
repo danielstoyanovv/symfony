@@ -10,10 +10,10 @@ interface UploaderInterface
     /**
      * @param UploadedFile $file
      * @param string $projectDir
-     * @param string|null $type
+     * @param string $type
      * @return File|void
      */
-    public function upload(UploadedFile $file, string $projectDir, string $type = null);
+    public function upload(UploadedFile $file, string $projectDir, string $type);
 
     /**
      * @param string $projectDir

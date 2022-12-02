@@ -62,7 +62,7 @@ class ProductsController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($form->get('image')->getData()) {
-                    if ($image = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'))) {
+                    if ($image = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'), 'image')) {
                         $product->addImage($image);
                     }
                 }
@@ -92,7 +92,7 @@ class ProductsController extends AbstractController
      * @return Response
      * @Route("/update/{slug}", name="app_admin_products_update", methods={"GET", "POST"})
      */
-    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader): Response
+    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, string $siteUrl): Response
     {
         try {
             $form = $this->createForm(ProductType::class, $product);
@@ -101,7 +101,7 @@ class ProductsController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($form->get('image')->getData()) {
-                    if ($image = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'))) {
+                    if ($image = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'), 'image')) {
                         $product->addImage($image);
                     }
                 }
@@ -116,7 +116,8 @@ class ProductsController extends AbstractController
         }
 
         return $this->renderForm('admin/products/update.html.twig', [
-            'form' => $form
+            'form' => $form,
+            'product' => $product
         ]);
     }
 

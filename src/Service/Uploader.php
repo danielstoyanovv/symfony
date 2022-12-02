@@ -20,34 +20,34 @@ class Uploader implements UploaderInterface
     /**
      * @param UploadedFile $file
      * @param string $projectDir
-     * @param string|null $type
+     * @param string $type
      * @return File|void
      */
-    public function upload(UploadedFile $file, string $projectDir, string $type = null)
+    public function upload(UploadedFile $file, string $projectDir, string $type)
     {
         $uploadDir = $this->getUploadsDir($projectDir);
         switch ($type) {
             case 'file':
                 $uploadDir .= 'files' . DIRECTORY_SEPARATOR;
                 break;
-            default:
+            case 'image':
                 $uploadDir .= 'images' . DIRECTORY_SEPARATOR;
         }
 
-
         $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $uniquerFileName = $fileName . '-' . uniqid() . '.' . $file->guessExtension();
         $uploadedFile = $file->move(
             $uploadDir,
-            $fileName . '-' . uniqid() . '.' . $file->guessExtension()
+            $uniquerFileName
         );
-
 
         $newFile = new File();
         $newFile
+            ->setType($type)
             ->setOriginalName($fileName)
             ->setMime($uploadedFile->getMimeType())
             ->setSize($uploadedFile->getSize())
-            ->setName($fileName . '-' . uniqid() . '.' . $uploadedFile->guessExtension());
+            ->setName($uniquerFileName);
 
         $this->entityManager->persist($newFile);
         $this->entityManager->flush();

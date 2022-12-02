@@ -45,6 +45,11 @@ class File
      */
     private $product;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $type;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,6 +111,18 @@ class File
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

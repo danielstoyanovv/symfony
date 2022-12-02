@@ -7,6 +7,7 @@ parameters:
     paypal_api_url: '%env(PAYPAL_API_URL)%'
     paypal_url: '%env(PAYPAL_URL)%'
     paypal_authorization_code: '%env(PAYPAL_AUTHORIZATION_CODE)%'
+    site_url: '%env(SITE_URL)%'
 
 services:
     # default configuration for services in *this* file
@@ -17,6 +18,7 @@ services:
             $paypalApiUrl: '%paypal_api_url%'
             $paypalUrl: '%paypal_url%'
             $paypaAuthorizationCode: '%paypal_authorization_code%'
+            $siteUrl: '%site_url%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
