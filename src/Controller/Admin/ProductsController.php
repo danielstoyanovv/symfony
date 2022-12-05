@@ -92,7 +92,7 @@ class ProductsController extends AbstractController
      * @return Response
      * @Route("/update/{slug}", name="app_admin_products_update", methods={"GET", "POST"})
      */
-    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, string $siteUrl): Response
+    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader): Response
     {
         try {
             $form = $this->createForm(ProductType::class, $product);

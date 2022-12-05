@@ -18,6 +18,12 @@
                     <p>{{ product.name }}</p>
                     <p>{{ product.description }}</p>
                     <span class="fw-bold">{{ product.price }}</span>
+                    <form method="post" action="{{ path('app_add_to_cart_page') }}">
+                        <input type="hidden" name="product" value="{{ product.id }}">
+                        <input type="hidden" name="price" value="{{ product.price }}">
+                        <input placeholder="{{ 'Qty' }}" type="text" name="qty" required>
+                        <button type="submit" class="btn btn-warning">{{ 'Add to cart' }}</button>
+                    </form>
                 </div>
             </div>
         {% else %}
