@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use App\Enum\Flash;
 
 class CartController extends AbstractController
 {
@@ -47,12 +48,10 @@ class CartController extends AbstractController
                     if ($product = $entityManager->getRepository(Product::class)->find($productId)) {
                        $cart = $this->handleCartData($request,  $entityManager, $cartTotal);
                        $this->handleCartItemData($cart, $entityManager, $product, $qty, $price);
-
+                        $this->addFlash(Flash::SUCCESS, 'Product was added in cart');
                         $request->getSession()->set('cart_id', $cart->getId());
                     }
-
                 }
-
             }
         } catch (\Exception $exception) {
             $logger->error($exception->getMessage());
@@ -64,10 +63,10 @@ class CartController extends AbstractController
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param int $cartTotal
+     * @param float $cartTotal
      * @return Cart|mixed|object
      */
-    private function handleCartData(Request $request, EntityManagerInterface $entityManager, int $cartTotal)
+    private function handleCartData(Request $request, EntityManagerInterface $entityManager, float $cartTotal)
     {
         if (!empty($request->getSession()->get('cart_id'))) {
             if ($cart = $entityManager->getRepository(Cart::class)->find($request->getSession()->get('cart_id'))) {
@@ -92,10 +91,10 @@ class CartController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Product $product
      * @param int $qty
-     * @param int $price
+     * @param float $price
      * @return CartItem|mixed
      */
-    private function handleCartItemData(Cart $cart, EntityManagerInterface $entityManager, Product $product, int $qty, int $price)
+    private function handleCartItemData(Cart $cart, EntityManagerInterface $entityManager, Product $product, int $qty, float $price)
     {
         foreach ($cart->getCartItem() as $item) {
             if ($product->getId() == $item->getProduct()->getId()) {
@@ -117,5 +116,47 @@ class CartController extends AbstractController
         $entityManager->flush();
 
         return $cartItem;
+    }
+
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param LoggerInterface $logger
+     * @return Response
+     * @Route("/remove_from_cart", name="app_remove_from_cart_page", methods={"POST"})
+     */
+    public function removeFromCart(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
+    {
+        try {
+            if ($request->getMethod() == 'POST') {
+                if (!empty($request->get('cart_item_id'))) {
+                    if ($removeCartItem = $entityManager->getRepository(CartItem::class)->find($request->get('cart_item_id'))) {
+
+                        if ($removeCartItem->getCart()->getId() != $request->getSession()->get('cart_id')) {
+                            throw $this->createNotFoundException(sprintf(
+                                'Product name : %s can\'t be removed',
+                                $removeCartItem->getProduct()->getName()
+                            ));
+                        }
+
+                        $currentCartTotal = $removeCartItem->getCart()->getTotal();
+                        $newCartTotal = $currentCartTotal - $removeCartItem->getQty() * $removeCartItem->getPrice();
+
+                        $removeCartItem->getCart()->setTotal($newCartTotal);
+                        $entityManager->flush();
+
+                        $entityManager->remove($removeCartItem);
+                        $entityManager->flush();
+                    }
+                    $this->addFlash(Flash::SUCCESS, 'Product was removed from cart');
+
+                }
+
+            }
+        } catch (\Exception $exception) {
+            $logger->error($exception->getMessage());
+        }
+
+        return $this->redirectToRoute('app_cart_page');
     }
 }

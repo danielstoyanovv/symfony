@@ -1,0 +1,46 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ 'Orders' }}{% endblock %}
+
+{% block body %}
+    {% if order %}
+        <h3>
+            {{ 'Details' }}
+        </h3>
+        <p>{{ 'Total' }} <b>{{ order.total }}</b></p>
+        <p>{{ 'Status'}} <b>{{ order.status }}</b></p>
+        <p>
+            {{ 'Products' }}
+        </p>
+        <table class="table">
+            <thead>
+            <th>
+                {{ 'Price' }}
+            </th>
+            <th>
+                {{ 'Qty' }}
+            </th>
+            <th>
+                {{ 'Name' }}
+            </th>
+            </thead>
+            <tbody>
+            {% for item in order.orderItem %}
+                <tr>
+                    <td>
+                        {{ item.price }}
+                    </td>
+                    <td>
+                        {{ item.qty  }}
+                    </td>
+                    <td>
+                        {{ item.product.name }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    <a type="button" class="btn btn-warning" href="{{ path('app_admin_orders') }}">{{ 'Back' }}</a>
+
+{% endblock %}

@@ -12,6 +12,7 @@
                <th>{{ 'Product name' }}</th>
                <th>{{ 'Product price' }}</th>
                <th>{{ 'Qty' }}</th>
+                <th>{{ 'Action' }}</th>
             </thead>
             <tbody>
                 {% for item in cart.cartItem  %}
@@ -25,11 +26,30 @@
                         <td>
                             {{ item.qty }}
                         </td>
+                        <td>
+                            <form method="post" action="{{ path('app_remove_from_cart_page') }}">
+                                <input type="hidden" name="cart_item_id" value="{{ item.id }}">
+                                <button type="submit" class="btn btn-warning">{{ 'Remove' }}</button>
+                            </form>
+                        </td>
                     </tr>
+                {% else %}
+                    {{ 'Your cart is empty' }}
                 {% endfor %}
             </tbody>
         </table>
         {{ 'Total' }}: <b>{{ cart.total }}</b>
+
+        {% if cart.total > 0 %}
+            <form method="post" action="{{ path('app_checkout_page') }}">
+                <input type="hidden" name="payment_total" value="{{ cart.total }}">
+                <label for="payment_method">{{ 'Payment method' }}</label>
+                <select name="payment_method">
+                    <option value="paypal">{{ 'Paypal' }}</option>
+                </select>
+                <button type="submit" class="btn btn-success">{{ 'Pay' }}</button>
+            </form>
+        {% endif %}
     {% else %}
         {{ 'Your cart is empty' }}
     {% endif %}

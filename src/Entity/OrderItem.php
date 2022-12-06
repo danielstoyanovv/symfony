@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\CartItemRepository;
+use App\Repository\OrderItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
- * @ORM\Entity(repositoryClass=CartItemRepository::class)
+ * @ORM\Entity(repositoryClass=OrderItemRepository::class)
  */
-class CartItem
+class OrderItem
 {
     use TimestampableEntity;
 
@@ -37,10 +37,10 @@ class CartItem
     private $qty;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Cart::class, inversedBy="cartItem")
+     * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="orderItem")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $cart;
+    private $orders;
 
     public function getId(): ?int
     {
@@ -83,14 +83,14 @@ class CartItem
         return $this;
     }
 
-    public function getCart(): ?Cart
+    public function getOrders(): ?Order
     {
-        return $this->cart;
+        return $this->orders;
     }
 
-    public function setCart(?Cart $cart): self
+    public function setOrders(?Order $orders): self
     {
-        $this->cart = $cart;
+        $this->orders = $orders;
 
         return $this;
     }

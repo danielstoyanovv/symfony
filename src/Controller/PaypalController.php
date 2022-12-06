@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Cart;
+use App\Entity\Order;
+use App\Entity\OrderItem;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,14 +41,38 @@ class PaypalController extends AbstractController
      * @param string $paypalApiUrl
      * @param string $paypaAuthorizationCode
      * @return Response
+     *
      * @Route("/success", name="paypal_success")
      */
-    public function success(Request $request, string $paypalApiUrl, string $paypaAuthorizationCode): Response
+    public function success(Request $request, string $paypalApiUrl, string $paypaAuthorizationCode, EntityManagerInterface $entityManager): Response
     {
         try {
             if ($request->get('token') && $request->get('PayerID')) {
                 $this->addFlash('success', 'The payment was successful');
-                $this->paypal->capture($request->get('token'), $paypalApiUrl, $this->getToken($request, $paypalApiUrl, $paypaAuthorizationCode));
+                $captureResponse = $this->paypal->capture($request->get('token'), $paypalApiUrl, $this->getToken($request, $paypalApiUrl, $paypaAuthorizationCode));
+
+                if ($cart = $entityManager->getRepository(Cart::class)->find($request->getSession()->get('cart_id'))) {
+                    $order =  new Order();
+                    $order->setTotal($cart->getTotal())
+                            ->setStatus($captureResponse['status'] ?? '');
+
+                    $entityManager->persist($order);
+                    $entityManager->flush();
+
+                    foreach ($cart->getCartItem() as $item) {
+                        $orderItem = new OrderItem();
+                        $orderItem->setQty($item->getQty())
+                            ->setPrice($item->getPrice())
+                            ->setProduct($item->getProduct())
+                            ->setOrders($order);
+
+                        $entityManager->persist($orderItem);
+                        $entityManager->flush();
+                    }
+
+                    $entityManager->remove($cart);
+                    $entityManager->flush();
+                }
             }
         } catch (\Exception $exception) {
             $this->logger->error($exception->getMessage());

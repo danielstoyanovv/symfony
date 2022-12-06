@@ -22,7 +22,7 @@ class Cart
     private $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="float", nullable=true)
      */
     private $total = 0;
 
@@ -41,12 +41,12 @@ class Cart
         return $this->id;
     }
 
-    public function getTotal(): ?int
+    public function getTotal(): ?float
     {
         return $this->total;
     }
 
-    public function setTotal(?int $total): self
+    public function setTotal(?float $total): self
     {
         $this->total = $total;
 

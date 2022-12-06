@@ -33,34 +33,40 @@ class Paypal implements PaypalInterface
      * @param string $orderId
      * @param string $paypalApiUrl
      * @param string $token
-     * @return void
+     * @return array
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function capture(string $orderId, string $paypalApiUrl, string $token): void
+    public function capture(string $orderId, string $paypalApiUrl, string $token): array
     {
-            $captureResponseJson = $this->client->request(
-                "POST",
-                $paypalApiUrl . "/v2/checkout/orders/" . $orderId .  "/capture",
-                [
-                    "headers" => [
-                        "Content-Type" => "application/json",
-                        "Authorization" => "Bearer " . $token,
-                    ],
-                ]
-            );
+        $result = [];
+        $captureResponseJson = $this->client->request(
+            "POST",
+            $paypalApiUrl . "/v2/checkout/orders/" . $orderId .  "/capture",
+            [
+                "headers" => [
+                    "Content-Type" => "application/json",
+                    "Authorization" => "Bearer " . $token,
+                ],
+            ]
+        );
 
-            new ApiLogProvider(
-                'Paypal',
-                $paypalApiUrl . "/v2/checkout/orders/" . $orderId .  "/capture",
-                ' Content-Type application/json' .
-                ' Authorization Basic ' . $token,
-                $captureResponseJson->getContent(),
-                $captureResponseJson->getStatusCode(),
-                $this->entityManager
-            );
+        new ApiLogProvider(
+            'Paypal',
+            $paypalApiUrl . "/v2/checkout/orders/" . $orderId .  "/capture",
+            ' Content-Type application/json' .
+            ' Authorization Basic ' . $token,
+            $captureResponseJson->getContent(),
+            $captureResponseJson->getStatusCode(),
+            $this->entityManager
+        );
+        if (!empty($captureResponseJson)) {
+            $result = json_decode($captureResponseJson->getContent(), true);
+        }
+
+        return $result;
     }
 
     /**
@@ -116,7 +122,7 @@ class Paypal implements PaypalInterface
 
     /**
      * @param string $token
-     * @param int $amount
+     * @param float $amount
      * @param string $paypalApiUrl
      * @return array|mixed
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
@@ -124,7 +130,7 @@ class Paypal implements PaypalInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function createOrder(string $token, int $amount, string $paypalApiUrl)
+    public function createOrder(string $token, float $amount, string $paypalApiUrl)
     {
         $result = [];
         $payPalRequestId = rand();

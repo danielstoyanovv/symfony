@@ -14,7 +14,7 @@ interface PaypalInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function capture(string $orderId, string $paypalApiUrl, string $token): void;
+    public function capture(string $orderId, string $paypalApiUrl, string $token): array;
 
     /**
      * @param string $paypalApiUrl
@@ -36,7 +36,7 @@ interface PaypalInterface
 
     /**
      * @param string $token
-     * @param int $amount
+     * @param float $amount
      * @param string $paypalApiUrl
      * @return array|mixed
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
@@ -44,5 +44,5 @@ interface PaypalInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function createOrder(string $token, int $amount, string $paypalApiUrl);
+    public function createOrder(string $token, float $amount, string $paypalApiUrl);
 }

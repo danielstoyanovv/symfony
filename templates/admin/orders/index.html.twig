@@ -1,0 +1,52 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ 'Orders' }}{% endblock %}
+
+{% block body %}
+<h3>{{ 'Orders' }}</h3>
+    <table class="table">
+        <thead>
+        <th>
+            {{ 'Id' }}
+        </th>
+        <th>
+            {{ 'Status' }}
+        </th>
+        <th>
+            {{ 'Total' }}
+        </th>
+        <th>
+            {{ 'Created at' }}
+        </th>
+        <th>
+            {{ 'Action' }}
+        </th>
+        </thead>
+        <tbody>
+            {% for order in collection %}
+                <tr>
+                    <td>
+                        {{ order.id }}
+                    </td>
+                    <td>
+                        {{ order.status }}
+                    </td>
+                    <td>
+                        {{ order.total }}
+                    </td>
+                    <td>
+                        {{ order.createdAt|date }}
+                    </td>
+                    <td>
+                        <a type="button" class="btn btn-success" href="{{ path('app_admin_orders_details', {'id': order.id}) }}">{{ 'Details' }}</a>
+                    </td>
+                </tr>
+            {% else %}
+                {{ 'The are no api logs' }}
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation">
+        {{ knp_pagination_render(collection) }}
+    </div>
+{% endblock %}
