@@ -1,6 +1,6 @@
 {% extends 'admin.html.twig' %}
 
-{% block title %}{{ 'Orders' }}{% endblock %}
+{% block title %}{{ 'Details' }}{% endblock %}
 
 {% block body %}
     {% if order %}
@@ -9,6 +9,7 @@
         </h3>
         <p>{{ 'Total' }} <b>{{ order.total }}</b></p>
         <p>{{ 'Status'}} <b>{{ order.status }}</b></p>
+        <p>{{ 'Payment method'}} <b>{{ order.paymentMethod }}</b></p>
         <p>
             {{ 'Products' }}
         </p>

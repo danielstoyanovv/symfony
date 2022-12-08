@@ -38,6 +38,11 @@ class Order
      */
     private $orderItem;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $paymentMethod;
+
     public function __construct()
     {
         $this->orderItem = new ArrayCollection();
@@ -98,6 +103,18 @@ class Order
                 $orderItem->setOrders(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPaymentMethod(): ?string
+    {
+        return $this->paymentMethod;
+    }
+
+    public function setPaymentMethod(?string $paymentMethod): self
+    {
+        $this->paymentMethod = $paymentMethod;
 
         return $this;
     }

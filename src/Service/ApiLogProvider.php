@@ -14,8 +14,10 @@ class ApiLogProvider implements ApiLogProviderInterface
      * @param string $responseData
      * @param int $responseCode
      * @param EntityManagerInterface $manager
+     * @return void
      */
-    public function __construct(string $apiName, string $requestUrl, string $requestHeaders, string $responseData, int $responseCode, EntityManagerInterface $manager) {
+    public function createLog(string $apiName, string $requestUrl, string $requestHeaders, string $responseData, int $responseCode, EntityManagerInterface $manager): void
+    {
         ApiLogFactory::createOne([
             'apiName' => $apiName,
             'requestUrl' => $requestUrl,

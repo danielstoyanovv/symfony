@@ -10,6 +10,9 @@
             {{ 'Id' }}
         </th>
         <th>
+            {{ 'Payment method' }}
+        </th>
+        <th>
             {{ 'Status' }}
         </th>
         <th>
@@ -29,6 +32,9 @@
                         {{ order.id }}
                     </td>
                     <td>
+                        {{ order.paymentMethod }}
+                    </td>
+                    <td>
                         {{ order.status }}
                     </td>
                     <td>
@@ -42,7 +48,7 @@
                     </td>
                 </tr>
             {% else %}
-                {{ 'The are no api logs' }}
+                {{ 'The are no orders' }}
             {% endfor %}
         </tbody>
     </table>

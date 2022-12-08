@@ -23,10 +23,16 @@ class Paypal implements PaypalInterface
      */
     private $entityManager;
 
-    public function __construct(HttpClientInterface  $client, UrlGeneratorInterface $urlGenerator, EntityManagerInterface $entityManager) {
+    /**
+     * @var ApiLogProviderInterface
+     */
+    private $apiLogProvider;
+
+    public function __construct(HttpClientInterface  $client, UrlGeneratorInterface $urlGenerator, EntityManagerInterface $entityManager, ApiLogProviderInterface $apiLogProvider) {
         $this->client = $client;
         $this->urlGenerator = $urlGenerator;
         $this->entityManager = $entityManager;
+        $this->apiLogProvider = $apiLogProvider;
     }
 
     /**
@@ -53,7 +59,7 @@ class Paypal implements PaypalInterface
             ]
         );
 
-        new ApiLogProvider(
+        $this->apiLogProvider->createLog(
             'Paypal',
             $paypalApiUrl . "/v2/checkout/orders/" . $orderId .  "/capture",
             ' Content-Type application/json' .
@@ -62,6 +68,7 @@ class Paypal implements PaypalInterface
             $captureResponseJson->getStatusCode(),
             $this->entityManager
         );
+
         if (!empty($captureResponseJson)) {
             $result = json_decode($captureResponseJson->getContent(), true);
         }
@@ -98,7 +105,7 @@ class Paypal implements PaypalInterface
             $token = $tokenResponse['access_token'];
         }
 
-        new ApiLogProvider(
+        $this->apiLogProvider->createLog(
             'Paypal',
             $paypalApiUrl . '/v1/oauth2/token?grant_type=client_credentials',
             'Authorization Basic ' . $paypaAuthorizationCode,
@@ -176,12 +183,12 @@ class Paypal implements PaypalInterface
             $result = json_decode($orderResponseJson->getContent(), true);
         }
 
-        new ApiLogProvider(
+        $this->apiLogProvider->createLog(
             'Paypal',
             $paypalApiUrl . "/v2/checkout/orders",
             ' Content-Type application/json' .
-                    ' Authorization Bearer ' . $token .
-                    ' PayPal-Request-Id ' . $payPalRequestId,
+            ' Authorization Bearer ' . $token .
+            ' PayPal-Request-Id ' . $payPalRequestId,
             $orderResponseJson->getContent(),
             $orderResponseJson->getStatusCode(),
             $this->entityManager
