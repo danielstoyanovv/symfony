@@ -18,15 +18,15 @@ class CreateFileHandler implements MessageHandlerInterface
         $this->entityManager = $entityManager;
     }
 
-    public function __invoke(CreateFile $uploadFile)
+    public function __invoke(CreateFile $createFile)
     {
         $newFile = new File();
         $newFile
-            ->setType($uploadFile->getType())
-            ->setOriginalName($uploadFile->getUniqueFileName())
-            ->setMime($uploadFile->getMime())
-            ->setSize($uploadFile->getSize())
-            ->setName($uploadFile->getUniqueFileName());
+            ->setType($createFile->getType())
+            ->setOriginalName($createFile->getUniqueFileName())
+            ->setMime($createFile->getMime())
+            ->setSize($createFile->getSize())
+            ->setName($createFile->getUniqueFileName());
 
         $this->entityManager->persist($newFile);
         $this->entityManager->flush();
