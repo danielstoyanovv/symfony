@@ -1,13 +1,13 @@
 <?php
 
-namespace App\MessageHandler;
+namespace App\MessageHandler\Command;
 
 use App\Entity\Cart;
 use App\Entity\Order;
 use App\Entity\OrderItem;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
-use App\Message\CreateOrder;
+use App\Message\Command\CreateOrder;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class CreateOrderHandler implements MessageHandlerInterface
 {

@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Cart;
 use App\Entity\CartItem;
-use App\Entity\Product;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Enum\Flash;
+use App\Service\CartProviderInterface;
 
 class CartController extends AbstractController
 {
@@ -30,12 +30,12 @@ class CartController extends AbstractController
 
     /**
      * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @param LoggerInterface $logger
+     * @param CartProviderInterface $cartProvider
      * @return Response
      * @Route("/add_to_cart", name="app_add_to_cart_page", methods={"POST"})
      */
-    public function addToCart(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
+    public function addToCart(Request $request, LoggerInterface $logger, CartProviderInterface $cartProvider): Response
     {
         try {
             if ($request->getMethod() == 'POST') {
@@ -45,12 +45,11 @@ class CartController extends AbstractController
                     $qty = $request->get('qty');
                     $cartTotal = $price * $qty;
 
-                    if ($product = $entityManager->getRepository(Product::class)->find($productId)) {
-                       $cart = $this->handleCartData($request,  $entityManager, $cartTotal);
-                       $this->handleCartItemData($cart, $entityManager, $product, $qty, $price);
-                        $this->addFlash(Flash::SUCCESS, 'Product was added in cart');
+                    if ($cart = $cartProvider->addToCart($productId, $cartTotal, $qty, $price, $request->getSession()->get('cart_id'))) {
                         $request->getSession()->set('cart_id', $cart->getId());
                     }
+
+                    $this->addFlash(Flash::SUCCESS, 'Product was added in cart');
                 }
             }
         } catch (\Exception $exception) {
@@ -63,69 +62,12 @@ class CartController extends AbstractController
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param float $cartTotal
-     * @return Cart|mixed|object
-     */
-    private function handleCartData(Request $request, EntityManagerInterface $entityManager, float $cartTotal)
-    {
-        if (!empty($request->getSession()->get('cart_id'))) {
-            if ($cart = $entityManager->getRepository(Cart::class)->find($request->getSession()->get('cart_id'))) {
-                $currentTotal = $cart->getTotal();
-                $cart->setTotal($currentTotal + $cartTotal);
-                $entityManager->flush();
-                return $cart;
-            }
-        }
-
-        $cart = new Cart();
-        $cart->setTotal($cartTotal);
-
-        $entityManager->persist($cart);
-        $entityManager->flush();
-
-        return $cart;
-    }
-
-    /**
-     * @param Cart $cart
-     * @param EntityManagerInterface $entityManager
-     * @param Product $product
-     * @param int $qty
-     * @param float $price
-     * @return CartItem|mixed
-     */
-    private function handleCartItemData(Cart $cart, EntityManagerInterface $entityManager, Product $product, int $qty, float $price)
-    {
-        foreach ($cart->getCartItem() as $item) {
-            if ($product->getId() == $item->getProduct()->getId()) {
-                $currentQty = $item->getQty();
-                $item->setQty($currentQty + $qty);
-                $entityManager->flush();
-                return $item;
-            }
-        }
-
-        $cartItem = new CartItem();
-        $cartItem
-            ->setPrice($price)
-            ->setProduct($product)
-            ->setQty($qty)
-            ->setCart($cart);
-
-        $entityManager->persist($cartItem);
-        $entityManager->flush();
-
-        return $cartItem;
-    }
-
-    /**
-     * @param Request $request
-     * @param EntityManagerInterface $entityManager
      * @param LoggerInterface $logger
+     * @param CartProviderInterface $cartProvider
      * @return Response
      * @Route("/remove_from_cart", name="app_remove_from_cart_page", methods={"POST"})
      */
-    public function removeFromCart(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
+    public function removeFromCart(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger, CartProviderInterface $cartProvider): Response
     {
         try {
             if ($request->getMethod() == 'POST') {
@@ -138,20 +80,11 @@ class CartController extends AbstractController
                                 $removeCartItem->getProduct()->getName()
                             ));
                         }
-
-                        $currentCartTotal = $removeCartItem->getCart()->getTotal();
-                        $newCartTotal = $currentCartTotal - $removeCartItem->getQty() * $removeCartItem->getPrice();
-
-                        $removeCartItem->getCart()->setTotal($newCartTotal);
-                        $entityManager->flush();
-
-                        $entityManager->remove($removeCartItem);
-                        $entityManager->flush();
+                        $cartProvider->removeFromCart($removeCartItem);
                     }
+
                     $this->addFlash(Flash::SUCCESS, 'Product was removed from cart');
-
                 }
-
             }
         } catch (\Exception $exception) {
             $logger->error($exception->getMessage());
