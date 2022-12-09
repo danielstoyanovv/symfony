@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 interface UploaderInterface
 {
@@ -11,9 +11,10 @@ interface UploaderInterface
      * @param UploadedFile $file
      * @param string $projectDir
      * @param string $type
-     * @return File|void
+     * @param MessageBusInterface $messageBus
+     * @return string
      */
-    public function upload(UploadedFile $file, string $projectDir, string $type);
+    public function upload(UploadedFile $file, string $projectDir, string $type, MessageBusInterface $messageBus): string;
 
     /**
      * @param string $projectDir

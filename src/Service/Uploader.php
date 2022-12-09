@@ -2,28 +2,21 @@
 
 namespace App\Service;
 
+use App\Message\Command\CreateFile;
+use App\Message\Command\UploadFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use App\Entity\File;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class Uploader implements UploaderInterface
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager) {
-        $this->entityManager = $entityManager;
-    }
-
-    /**
      * @param UploadedFile $file
      * @param string $projectDir
      * @param string $type
-     * @return File|void
+     * @param MessageBusInterface $messageBus
+     * @return string
      */
-    public function upload(UploadedFile $file, string $projectDir, string $type)
+    public function upload(UploadedFile $file, string $projectDir, string $type, MessageBusInterface $messageBus): string
     {
         $uploadDir = $this->getUploadsDir($projectDir);
         switch ($type) {
@@ -33,26 +26,16 @@ class Uploader implements UploaderInterface
             case 'image':
                 $uploadDir .= 'images' . DIRECTORY_SEPARATOR;
         }
-
         $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $uniquerFileName = $fileName . '-' . uniqid() . '.' . $file->guessExtension();
-        $uploadedFile = $file->move(
-            $uploadDir,
-            $uniquerFileName
-        );
+        $uniqueFileName = $fileName . '-' . uniqid() . '.' . $file->guessExtension();
+        $size = $file->getSize();
+        $mime = $file->getMimeType();
 
-        $newFile = new File();
-        $newFile
-            ->setType($type)
-            ->setOriginalName($fileName)
-            ->setMime($uploadedFile->getMimeType())
-            ->setSize($uploadedFile->getSize())
-            ->setName($uniquerFileName);
+        $messageBus->dispatch(new UploadFile($file, $uploadDir, $uniqueFileName));
 
-        $this->entityManager->persist($newFile);
-        $this->entityManager->flush();
+        $messageBus->dispatch(new CreateFile($type, $size, $mime, $fileName, $uniqueFileName));
 
-        return $newFile;
+        return $uniqueFileName;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\File;
 use App\Entity\Product;
 use App\Enum\Flash;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\ProductType;
 use \Knp\Component\Pager\PaginatorInterface;
@@ -48,10 +50,11 @@ class ProductsController extends AbstractController
      * @param EntityManagerInterface $manager
      * @param LoggerInterface $logger
      * @param UploaderInterface $uploader
+     * @param MessageBusInterface $messageBus
      * @return Response
      * @Route("/create", name="app_admin_products_create", methods={"GET", "POST"})
      */
-    public function create(Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader): Response
+    public function create(Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus): Response
     {
         try {
             $product = new Product();
@@ -62,8 +65,10 @@ class ProductsController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($form->get('image')->getData()) {
-                    if ($image = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'), 'image')) {
-                        $product->addImage($image);
+                    if ($imageName = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'), 'image', $messageBus)) {
+                        if ($image = $manager->getRepository(File::class)->findOneBy(['name' => $imageName])) {
+                            $product->addImage($image);
+                        }
                     }
                 }
                 $manager->persist($product);
@@ -89,10 +94,11 @@ class ProductsController extends AbstractController
      * @param EntityManagerInterface $manager
      * @param LoggerInterface $logger
      * @param UploaderInterface $uploader
+     * @param MessageBusInterface $messageBus
      * @return Response
      * @Route("/update/{slug}", name="app_admin_products_update", methods={"GET", "POST"})
      */
-    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader): Response
+    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus): Response
     {
         try {
             $form = $this->createForm(ProductType::class, $product);
@@ -101,8 +107,10 @@ class ProductsController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 if ($form->get('image')->getData()) {
-                    if ($image = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'), 'image')) {
-                        $product->addImage($image);
+                    if ($imageName = $uploader->upload($form->get('image')->getData(), $this->getParameter('kernel.project_dir'), 'image', $messageBus)) {
+                        if ($image = $manager->getRepository(File::class)->findOneBy(['name' => $imageName])) {
+                            $product->addImage($image);
+                        }
                     }
                 }
                 $manager->flush();
