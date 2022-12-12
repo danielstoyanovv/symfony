@@ -48,15 +48,22 @@ class PaypalController extends AbstractController
     public function success(Request $request, string $paypalApiUrl, string $paypaAuthorizationCode, EntityManagerInterface $entityManager, MessageBusInterface $messageBus): Response
     {
         try {
+            $entityManager->beginTransaction();
+
             if ($request->get('token') && $request->get('PayerID')) {
                 $this->addFlash('success', 'The payment was successful');
                 $captureResponse = $this->paypal->capture($request->get('token'), $paypalApiUrl, $this->getToken($request, $paypalApiUrl, $paypaAuthorizationCode));
                 if ($cart = $entityManager->getRepository(Cart::class)->find($request->getSession()->get('cart_id'))) {
                     $messageBus->dispatch(
                         new CreateOrder($cart->getId(), $captureResponse['status'] ?? '', 'Paypal'));
+                    $entityManager->remove($cart);
+                    $entityManager->flush();
                 }
             }
+
+            $entityManager->commit();
         } catch (\Exception $exception) {
+            $entityManager->rollback();
             $this->logger->error($exception->getMessage());
         }
 
@@ -80,6 +87,7 @@ class PaypalController extends AbstractController
      * @param string $paypalApiUrl
      * @param string $paypalUrl
      * @param string $paypaAuthorizationCode
+     * @param EntityManagerInterface $entityManager
      * @return Response
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
@@ -87,9 +95,11 @@ class PaypalController extends AbstractController
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      * @Route("/pay", name="paypal_pay", methods={"POST"})
      */
-    public function pay(Request $request, string $paypalApiUrl, string $paypalUrl, string $paypaAuthorizationCode): Response
+    public function pay(Request $request, string $paypalApiUrl, string $paypalUrl, string $paypaAuthorizationCode, EntityManagerInterface $entityManager): Response
     {
         try {
+            $entityManager->beginTransaction();
+
             if ($request->getMethod() == 'POST' && !empty($request->get('price'))) {
                 if ($token = $this->getToken($request, $paypalApiUrl, $paypaAuthorizationCode)) {
                     $orderResponse = $this->paypal->createOrder($token, $request->get('price'), $paypalApiUrl);
@@ -98,7 +108,10 @@ class PaypalController extends AbstractController
                     }
                 }
             }
+
+            $entityManager->commit();
         } catch (\Exception $exception) {
+            $entityManager->rollback();
             $this->logger->error($exception->getMessage());
         }
         return $this->redirectToRoute('app_home_page');

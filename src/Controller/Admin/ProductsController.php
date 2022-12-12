@@ -57,6 +57,8 @@ class ProductsController extends AbstractController
     public function create(Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus): Response
     {
         try {
+            $manager->beginTransaction();
+
             $product = new Product();
 
             $form = $this->createForm(ProductType::class, $product);
@@ -73,12 +75,15 @@ class ProductsController extends AbstractController
                 }
                 $manager->persist($product);
                 $manager->flush();
+                $manager->commit();
 
                 $this->addFlash('success', "Product was created");
 
                 return $this->redirectToRoute('app_admin_products');
             }
+
         } catch (\Exception $exception) {
+            $manager->rollback();
             $logger->error($exception->getMessage());
         }
 
@@ -101,6 +106,8 @@ class ProductsController extends AbstractController
     public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus): Response
     {
         try {
+            $manager->beginTransaction();
+
             $form = $this->createForm(ProductType::class, $product);
 
             $form->handleRequest($request);
@@ -114,12 +121,14 @@ class ProductsController extends AbstractController
                     }
                 }
                 $manager->flush();
+                $manager->commit();
 
                 $this->addFlash('success', "Product was updated");
 
                 return $this->redirectToRoute('app_admin_products');
             }
         } catch (\Exception $exception) {
+            $manager->rollback();
             $logger->error($exception->getMessage());
         }
 
@@ -158,6 +167,7 @@ class ProductsController extends AbstractController
     public function savePosition(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
     {
         try {
+            $entityManager->beginTransaction();
             $result = ['result' => 0];
 
             if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ) {
@@ -168,6 +178,7 @@ class ProductsController extends AbstractController
                             $entityManager->flush();
                         }
                     }
+                    $entityManager->commit();
                     $this->addFlash(
                         Flash::SUCCESS,
                         'Products position was updated'
@@ -178,6 +189,7 @@ class ProductsController extends AbstractController
                 }
             }
         } catch (\Exception $exception) {
+            $entityManager->rollback();
             $logger->error($exception->getMessage());
             $this->addFlash(
                 Flash::ERROR,

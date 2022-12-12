@@ -6,8 +6,10 @@ use App\Entity\Cart;
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Message\Command\CreateOrder;
+use App\Message\Command\CreateOrderItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use \Symfony\Component\Messenger\MessageBusInterface;
 
 class CreateOrderHandler implements MessageHandlerInterface
 {
@@ -16,8 +18,14 @@ class CreateOrderHandler implements MessageHandlerInterface
      */
     private $entityManager;
 
-    public function __construct(EntityManagerInterface  $entityManager) {
+    /**
+     * @var MessageBusInterface
+     */
+    private $messageBus;
+
+    public function __construct(EntityManagerInterface  $entityManager, MessageBusInterface $messageBus) {
         $this->entityManager = $entityManager;
+        $this->messageBus = $messageBus;
     }
 
     public function __invoke(CreateOrder $createOrder)
@@ -31,19 +39,7 @@ class CreateOrderHandler implements MessageHandlerInterface
             $this->entityManager->persist($order);
             $this->entityManager->flush();
 
-            foreach ($cart->getCartItem() as $item) {
-                $orderItem = new OrderItem();
-                $orderItem->setQty($item->getQty())
-                    ->setPrice($item->getPrice())
-                    ->setProduct($item->getProduct())
-                    ->setOrders($order);
-
-                $this->entityManager->persist($orderItem);
-                $this->entityManager->flush();
-            }
-
-            $this->entityManager->remove($cart);
-            $this->entityManager->flush();
+          $this->messageBus->dispatch(new CreateOrderItem($cart->getId(), $order->getId()));
         }
     }
 }
