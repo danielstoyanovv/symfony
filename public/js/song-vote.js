@@ -7,6 +7,7 @@ $(document).ready(function(){
         if (rating && song && action) {
             $.ajax({
                 type: 'POST',
+                async: true,
                 url: action,
                 data: { song: song, rating: rating },
                 success: function(result) {
