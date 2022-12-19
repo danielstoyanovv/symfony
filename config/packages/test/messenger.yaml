@@ -2,4 +2,4 @@ framework:
     messenger:
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
-            async: 'in-memory'
+            async: 'in-memory://'
