@@ -35,6 +35,8 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFunction('function_name', [$this, 'doSomething']),
             new TwigFunction('get_product_image', [$this, 'getProductImage']),
+            new TwigFunction('get_file', [$this, 'getFile']),
+
         ];
     }
 
@@ -47,18 +49,24 @@ class AppExtension extends AbstractExtension
      * @param File $file
      * @return string
      */
+    public function getFile(File $file): string
+    {
+        $fullFileUrl = $this->siteUrl . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
+
+       $fullFileUrl .= 'files' . DIRECTORY_SEPARATOR . $file->getName();
+
+        return $fullFileUrl;
+    }
+
+    /**
+     * @param File $file
+     * @return string
+     */
     public function getProductImage(File $file): string
     {
         $fullFileUrl = $this->siteUrl . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
 
-        switch ($file->getType()) {
-            case 'file':
-                $fullFileUrl .= 'files' . DIRECTORY_SEPARATOR . $file->getName();
-                break;
-            case 'image':
-                $fullFileUrl .= 'images' . DIRECTORY_SEPARATOR . $file->getName();
-                break;
-        }
+        $fullFileUrl .= 'images' . DIRECTORY_SEPARATOR . $file->getName();
 
         return $fullFileUrl;
     }
