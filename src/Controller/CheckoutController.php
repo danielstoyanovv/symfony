@@ -8,15 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use App\Checkout\PaypalForm;
 
 /**
  * @Route("/checkout")
  */
 class CheckoutController extends AbstractController
 {
-    use PaypalForm;
-
     /**
      * @param Request $request
      * @param LoggerInterface $logger
@@ -32,10 +29,11 @@ class CheckoutController extends AbstractController
                     $paymentMethod = $request->get('payment_method');
                     $paymentTotal = $request->get('payment_total');
 
-                    switch ($paymentMethod) {
-                        case 'paypal':
-                            $this->getPaypalForm($paymentTotal, $urlGenerator->generate('paypal_pay', [], 0));
-                            break;
+                    $paymentClass = 'App' . DIRECTORY_SEPARATOR . 'Service' . DIRECTORY_SEPARATOR . 'Payment'
+                        . DIRECTORY_SEPARATOR . ucfirst($paymentMethod);
+                    if (class_exists($paymentClass)) {
+                        $paymentClassInstance = new $paymentClass;
+                        return $paymentClassInstance->processPayment($paymentTotal, $urlGenerator->generate('paypal_pay', [], 0));
                     }
                 }
 
