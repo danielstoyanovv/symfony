@@ -3,19 +3,29 @@
 namespace App\Service\Payment;
 
 use App\Checkout\PaypalForm;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Paypal implements PaymentInterface
 {
     use PaypalForm;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator) {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    /**
      * @param int $paymentTotal
      * @param string $actionUrl
      * @return void
      */
-    public function processPayment(int $paymentTotal, string $actionUrl): void
+    public function processPayment(int $paymentTotal): void
     {
-        $this->getPaypalForm($paymentTotal, $actionUrl);
+        $this->getPaypalForm($paymentTotal, $this->urlGenerator->generate('paypal_pay', [], 0));
     }
 
 
