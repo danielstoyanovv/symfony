@@ -9,8 +9,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\RedisAdapter;
-use Symfony\Component\Cache\Adapter\RedisTagAwareAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -59,8 +57,6 @@ class ProductsController extends AbstractController
     public function create(Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus): Response
     {
         try {
-            $cacheClient = RedisAdapter::createConnection('redis://localhost:6379');
-            $cache = new RedisTagAwareAdapter($cacheClient);
             $manager->beginTransaction();
 
             $product = new Product();
@@ -80,7 +76,6 @@ class ProductsController extends AbstractController
                 $manager->persist($product);
                 $manager->flush();
                 $manager->commit();
-                $cache->clear('products_page');
                 $this->addFlash('success', "Product was created");
 
                 return $this->redirectToRoute('app_admin_products');
@@ -110,8 +105,6 @@ class ProductsController extends AbstractController
     public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus): Response
     {
         try {
-            $cacheClient = RedisAdapter::createConnection('redis://localhost:6379');
-            $cache = new RedisTagAwareAdapter($cacheClient);
             $manager->beginTransaction();
 
             $form = $this->createForm(ProductType::class, $product);
@@ -128,7 +121,6 @@ class ProductsController extends AbstractController
                 }
                 $manager->flush();
                 $manager->commit();
-                $cache->clear('products_page');
                 $this->addFlash('success', "Product was updated");
 
                 return $this->redirectToRoute('app_admin_products');
