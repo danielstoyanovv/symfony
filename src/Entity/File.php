@@ -5,8 +5,19 @@ namespace App\Entity;
 use App\Repository\FileRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 /**
+ * @ApiResource(
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={
+            "get",
+ *          "put"
+ *     },
+ *     normalizationContext={"groups"={"file:read"}},
+ *     denormalizationContext={"groups"={"file:write"}}
+ * )
  * @ORM\Entity(repositoryClass=FileRepository::class)
  */
 class File
@@ -22,31 +33,38 @@ class File
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Groups({"file:read", "file:write", "product:read"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"file:read", "file:write", "product:read"})
      */
     private $mime;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"file:read", "file:write", "product:read"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"file:read", "file:write", "product:read"})
      */
     private $originalName;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="image")
+     * @Groups({"file:read", "product:write", "product:read"})
      */
     private $product;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"file:read", "file:write", "product:read"})
      */
     private $type;
 
