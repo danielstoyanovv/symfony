@@ -3,20 +3,16 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
-use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use App\Tests\LoginManager;
 
 class BaseWebTestCase extends WebTestCase
 {
+    use LoginManager;
+
     public function loginAsAdmin(KernelBrowser $client): User
     {
-        $adminUser = UserFactory::createOne();
-        $adminUser->setRoles(['ROLE_ADMIN']);
-        $adminUser->save();
-
-        $client->loginUser($adminUser->object());
-
-        return $adminUser->object();
+        return $this->createLoggedInAdminUser($client);
     }
 }
