@@ -6,8 +6,6 @@ use App\Enum\Flash;
 use App\Message\Command\CreateRatingData;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\RedisAdapter;
-use Symfony\Component\Cache\Adapter\RedisTagAwareAdapter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Psr\Log\LoggerInterface;
+use App\Cache\RedisManagerInterface;
 
 /**
  * @Route("/songs")
@@ -49,15 +48,13 @@ class SongsController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param LoggerInterface $logger
      * @param MessageBusInterface $messageBus
+     * @param RedisManagerInterface $redisManager
      * @IsGranted("ROLE_USER")
      * @return Response
      * @Route("/songs_vote", name="app_songs_vote", methods={"POST"})
      */
-    public function vote(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger, MessageBusInterface $messageBus): Response
+    public function vote(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger, MessageBusInterface $messageBus, RedisManagerInterface $redisManager): Response
     {
-        $cacheClient = RedisAdapter::createConnection('redis://localhost:6379');
-        $cache = new RedisTagAwareAdapter($cacheClient);
-
         $result = ['result' => 0];
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ) {
             if (!empty($request->get('song') && !empty($request->get('rating')))) {
@@ -76,6 +73,7 @@ class SongsController extends AbstractController
                             'Vote created'
                         );
                         $result = ['success' => 1];
+                        $cache = $redisManager->getAdapter();
                         $cache->clear('home_page');
                     } catch(\Exception $exception) {
                         $entityManager->rollback();

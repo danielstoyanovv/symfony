@@ -2,29 +2,27 @@
 
 namespace App\Controller;
 
+use App\Cache\RedisManagerInterface;
 use App\Entity\Song;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\RedisTagAwareAdapter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\RatingData;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Component\Cache\Adapter\RedisAdapter;
 
 class HomeController extends AbstractController
 {
     /**
      * index
      * @param EntityManagerInterface $entityManager
+     * @param RedisManagerInterface $redisManager
      * @return Response
      * @Route("", name="app_home_page")
      */
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, RedisManagerInterface $redisManager): Response
     {
-        $cacheClient = RedisAdapter::createConnection('redis://localhost:6379');
-        $cache = new RedisTagAwareAdapter($cacheClient);
-
+        $cache = $redisManager->getAdapter();
         $cache->get('home_page', function (ItemInterface $item) use ($entityManager)  {
             $item->expiresAfter(3600);
 
