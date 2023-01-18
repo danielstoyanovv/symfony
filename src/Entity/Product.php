@@ -83,6 +83,12 @@ class Product
      */
     private $image;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"product:read", "product:write", "file:read"})
+     */
+    private $status;
+
     public function __construct()
     {
         $this->image = new ArrayCollection();
@@ -179,6 +185,18 @@ class Product
                 $image->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

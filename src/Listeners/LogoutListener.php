@@ -25,7 +25,4 @@ class LogoutListener extends SessionLogoutListener
         $cache->clear('home_page');
         parent::onLogout($event);
     }
-
-
-
 }
