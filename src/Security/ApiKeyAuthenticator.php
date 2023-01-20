@@ -64,11 +64,10 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
         if ($request->headers->has('X-AUTH-TOKEN') === false) {
             throw new UserNotFoundException();
         }
-        $apiTokenString = $request->headers->get('X-AUTH-TOKEN');
 
-        if ($token = $request->headers->get('X-AUTH-TOKEN')) {
+        if ($apiTokenString = $request->headers->get('X-AUTH-TOKEN')) {
             return new Passport(
-                new UserBadge($token, function($userIdentifier) use ($apiTokenString) {
+                new UserBadge($apiTokenString, function($userIdentifier) use ($apiTokenString) {
                     $token = $this->entityManager->getRepository(ApiToken::class)->findOneBy(['token' => $apiTokenString]);
                     $user = $this->entityManager->getRepository(User::class)->findOneBy(['apiToken' => $token]);
 
@@ -85,7 +84,7 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
                     }
 
                     return false;
-                }, $token),
+                }, $apiTokenString),
                 []
             );
         }
