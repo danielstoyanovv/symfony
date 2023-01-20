@@ -49,6 +49,12 @@ class ApiTokenDataPersister implements ContextAwareDataPersisterInterface
             $data
                 ->setToken($this->tokenGenerator->generate())
                 ->setExpiresAt($expiredDatetime);
+            if ($currentToken = $user->getApiToken()) {
+                $user->setApiToken(null);
+                $this->entityManager->remove($currentToken);
+                $this->entityManager->flush();
+            }
+            $user->setApiToken($data);
 
             $this->entityManager->persist($data);
             $this->entityManager->flush();
@@ -60,7 +66,4 @@ class ApiTokenDataPersister implements ContextAwareDataPersisterInterface
         $this->entityManager->remove($data);
         $this->entityManager->flush();
     }
-
-
-
 }

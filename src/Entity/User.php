@@ -57,6 +57,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $ratingData;
 
+    /**
+     * @ORM\OneToOne(targetEntity=ApiToken::class, cascade={"persist", "remove"})
+     */
+    private $apiToken;
+
     public function __construct()
     {
         $this->ratingData = new ArrayCollection();
@@ -192,4 +197,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getApiToken(): ?ApiToken
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(?ApiToken $apiToken): self
+    {
+        $this->apiToken = $apiToken;
+
+        return $this;
+    }
+
+
 }

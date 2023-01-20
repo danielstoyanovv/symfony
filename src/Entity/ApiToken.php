@@ -81,4 +81,14 @@ class ApiToken
 
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasExpired(): bool
+    {
+        $now = new \DateTime('now');
+
+        return $now > $this->expiresAt;
+    }
 }
