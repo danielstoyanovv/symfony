@@ -37,7 +37,7 @@ class ApiTokenDataPersister implements ContextAwareDataPersisterInterface
         return $data instanceof ApiToken;
     }
 
-    public function persist($data, array $context = [])
+    public function persist($data, array $context = []): void
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $data->email]);
 
