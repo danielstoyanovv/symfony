@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Message\Command;
 
 class CreateRatingData
@@ -50,5 +49,4 @@ class CreateRatingData
     {
         return $this->rating;
     }
-
 }

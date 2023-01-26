@@ -9,7 +9,7 @@ use App\Message\Command\CreateOrder;
 use App\Message\Command\CreateOrderItem;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
-use \Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class CreateOrderHandler implements MessageHandlerInterface
 {
@@ -23,7 +23,8 @@ class CreateOrderHandler implements MessageHandlerInterface
      */
     private $messageBus;
 
-    public function __construct(EntityManagerInterface  $entityManager, MessageBusInterface $messageBus) {
+    public function __construct(EntityManagerInterface  $entityManager, MessageBusInterface $messageBus)
+    {
         $this->entityManager = $entityManager;
         $this->messageBus = $messageBus;
     }
@@ -33,13 +34,13 @@ class CreateOrderHandler implements MessageHandlerInterface
         if ($cart = $this->entityManager->getRepository(Cart::class)->find($createOrder->getCartId())) {
             $order =  new Order();
             $order->setTotal($cart->getTotal())
-                ->setStatus( $createOrder->getPaymentStatus())
+                ->setStatus($createOrder->getPaymentStatus())
                 ->setPaymentMethod($createOrder->getPaymentMethod());
 
             $this->entityManager->persist($order);
             $this->entityManager->flush();
 
-          $this->messageBus->dispatch(new CreateOrderItem($cart->getId(), $order->getId()));
+            $this->messageBus->dispatch(new CreateOrderItem($cart->getId(), $order->getId()));
         }
     }
 }

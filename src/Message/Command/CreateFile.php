@@ -29,7 +29,8 @@ class CreateFile
      */
     private $uniqueFileName;
 
-    public function __construct(string $type, string $size, string $mime, string $fileName, string $uniqueFileName) {
+    public function __construct(string $type, string $size, string $mime, string $fileName, string $uniqueFileName)
+    {
         $this->type = $type;
         $this->size = $size;
         $this->mime = $mime;

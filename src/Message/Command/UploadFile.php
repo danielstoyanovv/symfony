@@ -21,7 +21,8 @@ class UploadFile
      */
     private $uniqueFileName;
 
-    public function __construct(UploadedFile $file, string $uploadDir, string $uniqueFileName) {
+    public function __construct(UploadedFile $file, string $uploadDir, string $uniqueFileName)
+    {
         $this->file = $file;
         $this->uploadDir = $uploadDir;
         $this->uniqueFileName = $uniqueFileName;

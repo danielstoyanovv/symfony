@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\ContactsType;
-use \App\Service\SendWithTemplate;
+use App\Service\SendWithTemplate;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -69,6 +69,5 @@ class ContactsController extends AbstractController
         return $this->renderForm('contacts/index.html.twig', [
             'form' => $form
         ]);
-
     }
 }

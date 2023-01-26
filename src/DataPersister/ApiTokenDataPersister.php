@@ -26,7 +26,8 @@ class ApiTokenDataPersister implements ContextAwareDataPersisterInterface
      */
     private $tokenGenerator;
 
-    public function __construct(UserPasswordHasherInterface $hasher, EntityManagerInterface $entityManager, TokenGeneratorInterface $tokenGenerator) {
+    public function __construct(UserPasswordHasherInterface $hasher, EntityManagerInterface $entityManager, TokenGeneratorInterface $tokenGenerator)
+    {
         $this->hasher = $hasher;
         $this->entityManager = $entityManager;
         $this->tokenGenerator = $tokenGenerator;

@@ -46,6 +46,4 @@ class Uploader implements UploaderInterface
     {
         return $projectDir . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads'. DIRECTORY_SEPARATOR;
     }
-
-
 }

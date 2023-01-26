@@ -14,7 +14,8 @@ class Paypal implements PaymentInterface
      */
     private $urlGenerator;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator) {
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -26,6 +27,4 @@ class Paypal implements PaymentInterface
     {
         $this->getPaypalForm($paymentTotal, $this->urlGenerator->generate('paypal_pay', [], 0));
     }
-
-
 }

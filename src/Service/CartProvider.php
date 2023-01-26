@@ -14,7 +14,8 @@ class CartProvider implements CartProviderInterface
      */
     private $entityManager;
 
-    public function __construct(EntityManagerInterface  $entityManager) {
+    public function __construct(EntityManagerInterface  $entityManager)
+    {
         $this->entityManager = $entityManager;
     }
 
@@ -109,5 +110,4 @@ class CartProvider implements CartProviderInterface
         $this->entityManager->remove($removeCartItem);
         $this->entityManager->flush();
     }
-
 }

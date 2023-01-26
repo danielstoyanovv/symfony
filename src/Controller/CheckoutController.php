@@ -36,7 +36,6 @@ class CheckoutController extends AbstractController
                         return $paymentClassInstance->processPayment($paymentTotal);
                     }
                 }
-
             }
         } catch (\Exception $exception) {
             $logger->error($exception->getMessage());

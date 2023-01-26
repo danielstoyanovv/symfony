@@ -118,5 +118,4 @@ class Order
 
         return $this;
     }
-
 }

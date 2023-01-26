@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\RatingDataRepository;
 use Doctrine\ORM\Mapping as ORM;
-use \App\Entity\Song;
+use App\Entity\Song;
 
 /**
  * @ORM\Entity(repositoryClass=RatingDataRepository::class)

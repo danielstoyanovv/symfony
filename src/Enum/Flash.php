@@ -4,6 +4,6 @@ namespace App\Enum;
 
 class Flash
 {
-    const SUCCESS = 'success';
-    const ERROR = 'error';
+    public const SUCCESS = 'success';
+    public const ERROR = 'error';
 }

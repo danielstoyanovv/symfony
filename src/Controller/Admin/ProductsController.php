@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\ProductType;
-use \Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Service\UploaderInterface;
 
@@ -80,7 +80,6 @@ class ProductsController extends AbstractController
 
                 return $this->redirectToRoute('app_admin_products');
             }
-
         } catch (\Exception $exception) {
             $manager->rollback();
             $logger->error($exception->getMessage());
@@ -168,7 +167,7 @@ class ProductsController extends AbstractController
             $entityManager->beginTransaction();
             $result = ['result' => 0];
 
-            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ) {
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
                 if (!empty($request->get('products'))) {
                     foreach ($request->get('products') as $position => $productId) {
                         if ($product = $entityManager->getRepository(Product::class)->find($productId)) {
@@ -182,8 +181,6 @@ class ProductsController extends AbstractController
                         'Products position was updated'
                     );
                     $result = ['success' => 1];
-
-
                 }
             }
         } catch (\Exception $exception) {
@@ -199,5 +196,4 @@ class ProductsController extends AbstractController
         $response->setContent(json_encode($result, true));
         return $response;
     }
-
 }

@@ -80,7 +80,6 @@ class CartController extends AbstractController
             if ($request->getMethod() == 'POST') {
                 if (!empty($request->get('cart_item_id'))) {
                     if ($removeCartItem = $entityManager->getRepository(CartItem::class)->find($request->get('cart_item_id'))) {
-
                         if ($removeCartItem->getCart()->getId() != $request->getSession()->get('cart_id')) {
                             throw $this->createNotFoundException(sprintf(
                                 'Product name : %s can\'t be removed',

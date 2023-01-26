@@ -47,7 +47,8 @@ final class SongFactory extends ModelFactory
     {
         // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this
-             ->afterInstantiate(function(Song $song): void {})
+             ->afterInstantiate(function (Song $song): void {
+             })
         ;
     }
 

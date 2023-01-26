@@ -14,7 +14,8 @@ class CreateOrderItem
      */
     private $orderId;
 
-    public function __construct(int $cartId, string $orderId) {
+    public function __construct(int $cartId, string $orderId)
+    {
         $this->cartId = $cartId;
         $this->orderId = $orderId;
     }

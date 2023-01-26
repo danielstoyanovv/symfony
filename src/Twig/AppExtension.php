@@ -53,7 +53,7 @@ class AppExtension extends AbstractExtension
     {
         $fullFileUrl = $this->siteUrl . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
 
-       $fullFileUrl .= 'files' . DIRECTORY_SEPARATOR . $file->getName();
+        $fullFileUrl .= 'files' . DIRECTORY_SEPARATOR . $file->getName();
 
         return $fullFileUrl;
     }
@@ -70,5 +70,4 @@ class AppExtension extends AbstractExtension
 
         return $fullFileUrl;
     }
-
 }

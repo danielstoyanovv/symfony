@@ -28,7 +28,8 @@ class Paypal implements PaypalInterface
      */
     private $apiLogProvider;
 
-    public function __construct(HttpClientInterface  $client, UrlGeneratorInterface $urlGenerator, EntityManagerInterface $entityManager, ApiLogProviderInterface $apiLogProvider) {
+    public function __construct(HttpClientInterface  $client, UrlGeneratorInterface $urlGenerator, EntityManagerInterface $entityManager, ApiLogProviderInterface $apiLogProvider)
+    {
         $this->client = $client;
         $this->urlGenerator = $urlGenerator;
         $this->entityManager = $entityManager;
@@ -144,7 +145,7 @@ class Paypal implements PaypalInterface
         $referenceId = rand();
         $orderResponseJson = $this->client->request(
             "POST",
-             $paypalApiUrl . "/v2/checkout/orders",
+            $paypalApiUrl . "/v2/checkout/orders",
             [
                 "headers" => [
                     "Content-Type" => "application/json",

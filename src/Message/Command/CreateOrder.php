@@ -19,7 +19,8 @@ class CreateOrder
      */
     private $paymentMethod;
 
-    public function __construct(int $cartId, string $paymentStatus, string $paymentMethod) {
+    public function __construct(int $cartId, string $paymentStatus, string $paymentMethod)
+    {
         $this->cartId = $cartId;
         $this->paymentStatus = $paymentStatus;
         $this->paymentMethod = $paymentMethod;

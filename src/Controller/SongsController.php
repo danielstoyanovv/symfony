@@ -56,7 +56,7 @@ class SongsController extends AbstractController
     public function vote(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger, MessageBusInterface $messageBus, RedisManagerInterface $redisManager): Response
     {
         $result = ['result' => 0];
-        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ) {
+        if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
             if (!empty($request->get('song') && !empty($request->get('rating')))) {
                 if ($song = $entityManager->getRepository(Song::class)->find($request->get('song'))) {
                     try {
@@ -65,11 +65,12 @@ class SongsController extends AbstractController
                         $messageBus->dispatch(new CreateRatingData(
                             $song->getId(),
                             $this->getUser()->getId(),
-                            $request->get('rating')));
+                            $request->get('rating')
+                        ));
 
                         $entityManager->commit();
                         $this->addFlash(
-                           Flash::SUCCESS,
+                            Flash::SUCCESS,
                             'Vote created'
                         );
                         $result = ['success' => 1];
@@ -87,7 +88,8 @@ class SongsController extends AbstractController
                 } else {
                     throw $this->createNotFoundException(sprintf(
                         'Song id: %s did not exists',
-                        $request->get('song')));
+                        $request->get('song')
+                    ));
                 }
             }
         }

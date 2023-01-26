@@ -23,13 +23,15 @@ class HomeController extends AbstractController
     public function index(EntityManagerInterface $entityManager, RedisManagerInterface $redisManager): Response
     {
         $cache = $redisManager->getAdapter();
-        $cache->get('home_page', function (ItemInterface $item) use ($entityManager)  {
+        $cache->get('home_page', function (ItemInterface $item) use ($entityManager) {
             $item->expiresAfter(3600);
 
             $response = $this->render('home/index.html.twig', [
                 'rateData' => $entityManager->getRepository(RatingData::class)->getTopRatedData($entityManager),
-                'lastAddedSongs' => $entityManager->getRepository(Song::class)->findBy([
-                ], [
+                'lastAddedSongs' => $entityManager->getRepository(Song::class)->findBy(
+                    [
+                ],
+                    [
                     'id' => 'DESC'
                 ],
                     5

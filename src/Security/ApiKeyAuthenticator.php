@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Security;
 
 use App\Entity\ApiToken;
@@ -25,7 +24,8 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
      */
     private $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager) {
+    public function __construct(EntityManagerInterface $entityManager)
+    {
         $this->entityManager = $entityManager;
     }
 
@@ -67,7 +67,7 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
 
         if ($apiTokenString = $request->headers->get('X-AUTH-TOKEN')) {
             return new Passport(
-                new UserBadge($apiTokenString, function($userIdentifier) use ($apiTokenString) {
+                new UserBadge($apiTokenString, function ($userIdentifier) use ($apiTokenString) {
                     $token = $this->entityManager->getRepository(ApiToken::class)->findOneBy(['token' => $apiTokenString]);
                     $user = $this->entityManager->getRepository(User::class)->findOneBy(['apiToken' => $token]);
 
@@ -79,7 +79,6 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
                 }),
                 new CustomCredentials(function ($credentials, UserInterface $user) {
                     if (!empty($user->getApiToken()) && $user->getApiToken()->hasExpired() === false) {
-
                         return true;
                     }
 
