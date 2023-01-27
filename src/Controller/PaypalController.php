@@ -88,7 +88,6 @@ class PaypalController extends AbstractController
      * @param string $paypalApiUrl
      * @param string $paypalUrl
      * @param string $paypaAuthorizationCode
-     * @param EntityManagerInterface $entityManager
      * @return Response
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
@@ -96,11 +95,9 @@ class PaypalController extends AbstractController
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      * @Route("/pay", name="paypal_pay", methods={"POST"})
      */
-    public function pay(Request $request, string $paypalApiUrl, string $paypalUrl, string $paypaAuthorizationCode, EntityManagerInterface $entityManager): Response
+    public function pay(Request $request, string $paypalApiUrl, string $paypalUrl, string $paypaAuthorizationCode): Response
     {
         try {
-            $entityManager->beginTransaction();
-
             if ($request->getMethod() == 'POST' && !empty($request->get('price'))) {
                 if ($token = $this->getToken($request, $paypalApiUrl, $paypaAuthorizationCode)) {
                     $orderResponse = $this->paypal->createOrder($token, $request->get('price'), $paypalApiUrl);
@@ -109,10 +106,7 @@ class PaypalController extends AbstractController
                     }
                 }
             }
-
-            $entityManager->commit();
         } catch (\Exception $exception) {
-            $entityManager->rollback();
             $this->logger->error($exception->getMessage());
         }
         return $this->redirectToRoute('app_home_page');
