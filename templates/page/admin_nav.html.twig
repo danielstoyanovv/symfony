@@ -10,6 +10,12 @@
         </li>
         <li><a href='{{ path('app_admin_api_logs') }}'>{{ 'Api logs' }}</a></li>
         <li><a href='{{ path('app_admin_orders') }}'>{{ 'Orders' }}</a></li>
+        <li class='sub-menu'><a href='#articles'>{{ 'Articles' }}<div class='fa fa-caret-down right'></div></a>
+            <ul id="articles">
+                <li><a href='{{ path('app_admin_articles') }}'>{{ 'View all' }}</a></li>
+                <li><a href='{{ path('app_admin_article_new') }}'>{{ 'Create' }}</a></li>
+            </ul>
+        </li>
         <li><a href='{{ path('app_home_page') }}'>{{ 'Home' }}</a></li>
         <li><a href='{{ path('app_logout') }}'>{{ 'Logout' }}</a></li>
     </ul>

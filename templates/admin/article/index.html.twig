@@ -1,0 +1,55 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{{ 'Articles' }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'Articles' }}</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{{ 'Id' }}</th>
+                <th>{{ 'Created at' }}</th>
+                <th>{{ 'Publish at' }}</th>
+                <th>{{ 'Title' }}</th>
+                <th>{{ 'Content' }}</th>
+                <th>{{ 'Status' }}</th>
+                <th>{{ 'Actions' }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for article in collection %}
+            <tr>
+                <td>{{ article.id }}</td>
+                <td>{{ article.createdAt ? article.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ article.publishAt ? article.publishAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ article.title }}</td>
+                <td>{{ article.content }}</td>
+                <td>{{ article.status }}</td>
+                <td>
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
+                           id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="false">
+                            {{ 'Select' }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="{{ path('app_admin_article_show', {'id': article.id}) }}">{{ 'Show' }}</a>
+                            <a class="dropdown-item" href="{{ path('app_admin_article_edit', {'id': article.id}) }}">{{ 'Edit' }}</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">
+                    {{ 'The are no articles' }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="navigation">
+        {{ knp_pagination_render(collection) }}
+    </div>
+{% endblock %}

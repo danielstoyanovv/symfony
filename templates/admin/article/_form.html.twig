@@ -1,0 +1,18 @@
+{{ form_start(form) }}
+    <div class="mb-3">
+        {{ form_row(form.createdAt, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.publishAt, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.title, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.content, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.status, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <button class="form-control">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
