@@ -42,7 +42,7 @@ class Article
      * @Assert\Type("\DateTimeInterface")
      * @var \DateTime()
      */
-    private $createdAt;
+    public $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -50,26 +50,26 @@ class Article
      * @Assert\Type("\DateTimeInterface")
      * @var \DateTime()
      */
-    private $publishAt;
+    public $publishAt;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"article:read", "article:write"})
      * @Assert\NotBlank()
      */
-    private $title;
+    public $title;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"article:read", "article:write"})
      */
-    private $content;
+    public $content;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
      * @Groups({"article:read", "article:write"})
      */
-    private $status;
+    public $status;
 
     public function getId(): ?int
     {
