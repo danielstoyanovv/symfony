@@ -38,8 +38,7 @@ class ArticleDataPersister implements ContextAwareDataPersisterInterface
             ->setCreatedAt($data->getCreatedAt())
             ->setPublishAt($data->getPublishAt())
             ->setTitle($data->getTitle())
-            ->setContent($data->getContent())
-            ->setStatus($data->getStatus());
+            ->setContent($data->getContent());
 
         $this->entityManager->persist($data);
         $this->entityManager->flush();
