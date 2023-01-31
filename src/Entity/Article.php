@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
  * @ApiResource(
@@ -24,8 +24,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *     denormalizationContext={"groups"={"article:write"}}
  * )
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
- * @ApiFilter(SearchFilter::class, properties={"status": "partial"})
  * @ApiFilter(DateFilter::class, properties={"createdAt"})
+ * @ApiFilter(BooleanFilter::class, properties={"isActive"})
  */
 class Article
 {
@@ -42,7 +42,7 @@ class Article
      * @Assert\Type("\DateTimeInterface")
      * @var \DateTime()
      */
-    public $createdAt;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -50,26 +50,31 @@ class Article
      * @Assert\Type("\DateTimeInterface")
      * @var \DateTime()
      */
-    public $publishAt;
+    private $publishAt;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"article:read", "article:write"})
      * @Assert\NotBlank()
      */
-    public $title;
+    private $title;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"article:read", "article:write"})
      */
-    public $content;
+    private $content;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true)
-     * @Groups({"article:read", "article:write"})
+     * @Groups({"article:write"})
      */
-    public $status;
+    private $status;
+
+    /**
+     * @Groups({"article:read"})
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isActive;
 
     public function getId(): ?int
     {
@@ -132,6 +137,18 @@ class Article
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(?bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

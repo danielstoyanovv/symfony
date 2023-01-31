@@ -26,16 +26,20 @@ class ArticleDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = []): void
     {
-        if (!empty($data->status) && $data->status != 'active') {
+        if (!empty($data->getStatus()) && $data->getStatus() != 'active') {
             throw new InvalidArgumentException("'status' should be 'active' or empty string");
         }
 
+        if (!empty($data->getStatus())) {
+            $data->setIsActive(1);
+        }
+
         $data
-            ->setCreatedAt($data->createdAt)
-            ->setPublishAt($data->publishAt)
-            ->setTitle($data->title)
-            ->setContent($data->content)
-            ->setStatus($data->status);
+            ->setCreatedAt($data->getCreatedAt())
+            ->setPublishAt($data->getPublishAt())
+            ->setTitle($data->getTitle())
+            ->setContent($data->getContent())
+            ->setStatus($data->getStatus());
 
         $this->entityManager->persist($data);
         $this->entityManager->flush();
