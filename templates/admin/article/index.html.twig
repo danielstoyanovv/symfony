@@ -25,7 +25,7 @@
                 <td>{{ article.publishAt ? article.publishAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ article.title }}</td>
                 <td>{{ article.content }}</td>
-                <td>{{ article.status }}</td>
+                <td>{{ article.isActive ? 'Active' }}</td>
                 <td>
                     <div class="dropdown">
                         <a class="btn btn-secondary dropdown-toggle" href="#" role="button"

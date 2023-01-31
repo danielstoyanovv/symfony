@@ -54,6 +54,7 @@ class ArticleController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $articleRepository->add($article);
                 $entityManager->commit();
+                $this->addFlash('success', "Article was created");
                 return $this->redirectToRoute('app_admin_articles', [], Response::HTTP_SEE_OTHER);
             }
         } catch (\Exception $exception) {
@@ -95,6 +96,7 @@ class ArticleController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $articleRepository->add($article);
                 $entityManager->commit();
+                $this->addFlash('success', "Article was updated");
                 return $this->redirectToRoute('app_admin_articles', [], Response::HTTP_SEE_OTHER);
             }
         } catch (\Exception $exception) {

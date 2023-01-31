@@ -16,8 +16,7 @@ class ArticleType extends AbstractType
             ->add('publishAt')
             ->add('title')
             ->add('content')
-            ->add('status')
-        ;
+            ->add('isActive');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
