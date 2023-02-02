@@ -12,31 +12,36 @@
             <input type="text" value="{{ app.request.query.get('name') }}" name="name" placeholder="{{ 'Song name' }}" />
         <input type="submit" value="{{ 'Search' }}" />
     </form>
-
-    <h3>{{ 'Last mounth top songs list' }}</h3>
-    <ul class="list-group">
-        {% for song in songs %}
-            <li class="list-group-item">
-            {{ song.name|e }}
-            {% if song.author %}
-                ({{ song.author }})
-            {% endif %}
-            -
-            {% if rateData[song.id] is defined and rateData[song.id] is not null %}
-                <b>{{ 'Rating' }}: ({{ rateData[song.id].avg_rating|number_format(1) }}/10)</b>
-                <b>{{ 'Voters' }}: {{ rateData[song.id].count }}</b>
-            {% endif %}
-            {% if app.user %}
-                {{ include('form/vote_form.html.twig', { 'songId': song.id }) }}
-            {% endif %}
-            </li>
-        {% else %}
-            {{ 'The are no songs' }}
-        {% endfor %}
-    </ul>
-
-    <div class="navigation">
-        {{ knp_pagination_render(songs) }}
+    <div
+        {{ stimulus_controller('song-vote', {
+        }) }}
+    >
+        <div id="song-vote-list">
+            <h3>{{ 'Last mounth top songs list' }}</h3>
+            <ul class="list-group">
+                {% for song in songs %}
+                    <li class="list-group-item">
+                        {{ song.name|e }}
+                        {% if song.author %}
+                            ({{ song.author }})
+                        {% endif %}
+                        -
+                        {% if rateData[song.id] is defined and rateData[song.id] is not null %}
+                            <b>{{ 'Rating' }}: ({{ rateData[song.id].avg_rating|number_format(1) }}/10)</b>
+                            <b>{{ 'Voters' }}: {{ rateData[song.id].count }}</b>
+                        {% endif %}
+                        {% if app.user %}
+                            {{ include('form/vote_form.html.twig', { 'songId': song.id }) }}
+                        {% endif %}
+                    </li>
+                {% else %}
+                    {{ 'The are no songs' }}
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="navigation">
+            {{ knp_pagination_render(songs) }}
+        </div>
     </div>
 {% endif %}
 {% endblock %}
