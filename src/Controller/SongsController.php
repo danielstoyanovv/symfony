@@ -69,10 +69,6 @@ class SongsController extends AbstractController
                         ));
 
                         $entityManager->commit();
-                        $this->addFlash(
-                            Flash::SUCCESS,
-                            'Vote created'
-                        );
                         $result = ['success' => 1];
                         $cache = $redisManager->getAdapter();
                         $cache->clear('home_page');
@@ -80,10 +76,6 @@ class SongsController extends AbstractController
                         $entityManager->rollback();
                         $result = ['success' => 0];
                         $logger->error($exception->getMessage());
-                        $this->addFlash(
-                            Flash::ERROR,
-                            'Vote not created'
-                        );
                     }
                 } else {
                     throw $this->createNotFoundException(sprintf(
@@ -97,5 +89,26 @@ class SongsController extends AbstractController
         $response = new Response();
         $response->setContent(json_encode($result, true));
         return $response;
+    }
+
+    /**
+     * songs list
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @Route("/list", name="app_songs_list")
+     */
+    public function list(Request  $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    {
+        $collection = $paginator->paginate(
+            $entityManager->getRepository(Song::class)->filtered($request->query->all()),
+            $request->query->getInt('page', 1),
+            5
+        );
+
+        return $this->render('songs/list.html.twig', [
+            'rateData' => $entityManager->getRepository(Song::class)->getSongsRateData($entityManager),
+            'songs' => $collection
+        ]);
     }
 }
