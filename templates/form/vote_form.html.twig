@@ -13,6 +13,6 @@
             <option>9</option>
             <option>10</option>
         </select>
-        <button data-action="click->song-vote#vote" data-url="{{ path('app_songs_vote') }}" data-song="{{ songId }}" data-list="{{ path('app_songs_list') }}"  type="button" class="btn btn-success song-vote-button">{{ 'Send' }}
+        <button data-action="click->song-vote#vote" data-url="{{ path('app_songs_vote') }}" data-song="{{ songId }}" data-list="{{ path('app_songs_list') }}" data-message="{{ 'Vote created' }}"  type="button" class="btn btn-success song-vote-button">{{ 'Send' }}
         </button>
     </form>

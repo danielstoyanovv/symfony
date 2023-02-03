@@ -6,15 +6,21 @@
      <h3>
          {{ 'Please drag and drop to reorder products' }}
      </h3>
-    <ul id="sortable" data-action="{{ createOrderAction }}" class="list-group">
-    {% for product in collection %}
-        <li data-id="{{ product.id }}" class="list-group-item">
-            {{ product.name }}
-        </li>
-    {% else %}
-        {{ 'The are no products' }}
-    {% endfor %}
-    </ul>
+        <div
+            {{ stimulus_controller('product-sort', {
+            }) }}
+            data-url="{{ createOrderAction }}"
+        >
+        <ul id="sortable" class="list-group">
+            {% for product in collection %}
+                <li data-id="{{ product.id }}" class="list-group-item">
+                    {{ product.name }}
+                </li>
+            {% else %}
+                {{ 'The are no products' }}
+            {% endfor %}
+        </ul>
+    </div>
 
 {% endblock %}
 
