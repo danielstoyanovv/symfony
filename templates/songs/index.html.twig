@@ -16,7 +16,7 @@
         {{ stimulus_controller('song-vote', {
         }) }}
     >
-        <div id="song-vote-list">
+        <div id="song-vote-list" data-song-vote-target="songs">
             <h3>{{ 'Last mounth top songs list' }}</h3>
             <ul class="list-group">
                 {% for song in songs %}

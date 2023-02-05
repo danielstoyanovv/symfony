@@ -1,8 +1,17 @@
 import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
+import { useDispatch } from 'stimulus-use';
 
 export default class extends Controller {
+    static targets = ['songs'];
+
+    connect() {
+        useDispatch(this, {debug: true});
+    }
+
     vote(e) {
+        var classObject = this;
+
         let song = e.currentTarget.dataset.song;
         let rating = $('#rating-song-' + song).val();
         let voteAction = e.currentTarget.dataset.url;
@@ -25,7 +34,8 @@ export default class extends Controller {
                         type: 'GET',
                         url: listAction,
                         success: function(result) {
-                            $('#song-vote-list').html(result);
+                            classObject.dispatch('success');
+                            classObject.songsTarget.innerHTML = result;
                         }
                     });
                 }
