@@ -1,13 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 import $ from 'jquery';
-import { useDispatch } from 'stimulus-use';
 
 export default class extends Controller {
     static targets = ['songs'];
-
-    connect() {
-        useDispatch(this, {debug: true});
-    }
 
     vote(e) {
         var classObject = this;
@@ -34,7 +29,7 @@ export default class extends Controller {
                         type: 'GET',
                         url: listAction,
                         success: function(result) {
-                            classObject.dispatch('success');
+                            window.dispatchEvent(new Event("success"));
                             classObject.songsTarget.innerHTML = result;
                         }
                     });

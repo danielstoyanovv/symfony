@@ -1,7 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { Sortable } from 'sortablejs';
 import $ from 'jquery';
-import {useDispatch} from "stimulus-use";
 
 export default class extends Controller {
     connect() {
@@ -17,7 +16,7 @@ export default class extends Controller {
                         url: sortUrl,
                         data: { products: sortable.toArray() },
                         success: function(result) {
-                            location.reload();
+                            window.dispatchEvent(new Event("success"));
                         }
                     });
                 }

@@ -176,20 +176,12 @@ class ProductsController extends AbstractController
                         }
                     }
                     $entityManager->commit();
-                    $this->addFlash(
-                        Flash::SUCCESS,
-                        'Products position was updated'
-                    );
                     $result = ['success' => 1];
                 }
             }
         } catch (\Exception $exception) {
             $entityManager->rollback();
             $logger->error($exception->getMessage());
-            $this->addFlash(
-                Flash::ERROR,
-                'Products position was not updated'
-            );
         }
 
         $response = new Response();

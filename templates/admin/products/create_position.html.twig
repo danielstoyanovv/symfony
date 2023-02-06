@@ -21,6 +21,13 @@
             {% endfor %}
         </ul>
     </div>
+    <div
+        {{ stimulus_controller('modal') }}
+        data-action="success@window->modal#openModel"
+        data-content="{{ 'Products position was updated' }}"
+    >
+        {{ include('_modal.html.twig') }}
+    </div>
 
 {% endblock %}
 
