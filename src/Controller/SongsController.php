@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Enum\Flash;
 use App\Message\Command\CreateRatingData;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
