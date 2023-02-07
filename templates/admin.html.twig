@@ -18,27 +18,24 @@
     {% endblock %}
 </head>
 <body>
+    <div class="container-fluid">
+        {{ include('page/header.html.twig') }}
 
-<div class="container-fluid">
-    {{ include('page/header.html.twig') }}
+        <div class="row mt-5">
+            <div class="col-md-2">
+                {{ include('page/admin_nav.html.twig') }}
+                <div {{ stimulus_controller('menu') }}></div>
+            </div>
+            <div class="col-md-10">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {% block body %}{% endblock %}
+            </div>
+        </div>
 
-    <div class="row mt-5">
-        <div class="col-md-2">
-            {{ include('page/admin_nav.html.twig') }}
-        </div>
-        <div class="col-md-10">
-            {% for message in app.flashes('success') %}
-                <div class="alert alert-success">
-                    {{ message }}
-                </div>
-            {% endfor %}
-            {% block body %}{% endblock %}
-        </div>
     </div>
-
-</div>
-
-<!-- JAVASCRIPT FILES -->
-<script src="/js/menu.js"></script>
 </body>
 </html>
