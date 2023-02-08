@@ -23,8 +23,8 @@
                             <div data-read-more-target="content">
                                 {{  product.description|slice(0, 50) }}...
                             </div>
-                            <a class="read-more-link" data-action="click->read-more#showContent"  data-description="{{ product.description }}">{{ 'Read more' }}</a>
-                            <a class="read-less-link d-none" data-action="click->read-more#hideContent"  data-short-description="{{  product.description|slice(0, 50) }}">{{ 'Read less' }}</a>
+                            <a href="" class="read-more-link" data-action="click->read-more#showContent"  data-description="{{ product.description }}">{{ 'Read more' }}</a>
+                            <a href="" class="read-less-link d-none" data-action="click->read-more#hideContent"  data-short-description="{{  product.description|slice(0, 50) }}">{{ 'Read less' }}</a>
                         </div>
                     {% else %}
                         {{  product.description }}
