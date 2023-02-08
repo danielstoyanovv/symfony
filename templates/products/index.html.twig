@@ -16,7 +16,19 @@
                 </div>
                 <div class="col text-center">
                     <p>{{ product.name }}</p>
-                    <p>{{ product.description }}</p>
+                    {% if product.description|length > 50 %}
+                        <div
+                            {{ stimulus_controller('read-more') }}
+                        >
+                            <div data-read-more-target="content">
+                                {{  product.description|slice(0, 50) }}...
+                            </div>
+                            <a class="read-more-link" data-action="click->read-more#showContent"  data-description="{{ product.description }}">{{ 'Read more' }}</a>
+                            <a class="read-less-link d-none" data-action="click->read-more#hideContent"  data-short-description="{{  product.description|slice(0, 50) }}">{{ 'Read less' }}</a>
+                        </div>
+                    {% else %}
+                        {{  product.description }}
+                    {% endif %}
                     <span class="fw-bold">{{ product.price }}</span>
                     <form method="post" action="{{ path('app_add_to_cart_page') }}">
                         <input type="hidden" name="product" value="{{ product.id }}">
