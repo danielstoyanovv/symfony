@@ -69,7 +69,9 @@ class ContactsController extends AbstractController
         } catch (\Exception $exception) {
             $logger->error($exception->getMessage());
         }
-        return $this->renderForm('contacts/index.html.twig', [
+        return $this->renderForm(
+            'contacts/index.html.twig',
+            [
                 'form' => $form
             ]
         );

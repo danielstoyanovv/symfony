@@ -10,7 +10,6 @@ export default class extends Controller {
 
         this.element.addEventListener('turbo:submit-end', (event) => {
 
-            console.log(event.detail.success);
             if (event.detail.success === true) {
                 return Turbo.visit(document.URL);
             } else if (event.detail.success === false) {
