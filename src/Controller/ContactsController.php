@@ -24,7 +24,7 @@ class ContactsController extends AbstractController
      * @param LoggerInterface $logger
      * @param Filesystem $filesystem
      * @return Response
-     * @Route("", name="app_contacts_page", methods={"POST"})
+     * @Route("", name="app_contacts_page", methods={"POST", "GET"})
      */
     public function index(Request  $request, SendWithTemplate $sendEmail, LoggerInterface $logger, Filesystem $filesystem): Response
     {
@@ -75,23 +75,5 @@ class ContactsController extends AbstractController
                 'form' => $form
             ]
         );
-    }
-
-    /**
-     * index
-     * @param Request $request
-     * @param SendWithTemplate $sendEmail
-     * @param LoggerInterface $logger
-     * @param Filesystem $filesystem
-     * @return Response
-     * @Route("/form", name="app_contacts_form_page", methods={"GET"})
-     */
-    public function form(Request  $request, SendWithTemplate $sendEmail, LoggerInterface $logger, Filesystem $filesystem): Response
-    {
-        $form = $this->createForm(ContactsType::class);
-
-        return $this->renderForm('contacts/form.html.twig', [
-            'form' => $form
-        ]);
     }
 }

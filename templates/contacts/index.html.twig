@@ -1,20 +1,6 @@
-<turbo-frame id="contacts_page_form">
-    {{ form_start(form, {attr: {'action': path('app_contacts_page')}},  {'method': 'POST'}) }}
-    <div class="mb-3">
-        {{ form_row(form.firstName, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    <div class="mb-3">
-        {{ form_row(form.familyName, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    <div class="mb-3">
-        {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
-        <div id="emailHelp" class="form-text">{{ "We'll never share your email with anyone else." }}</div>
-    </div>
-    <div class="mb-3">
-        {{ form_row(form.question, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    <div class="mb-3">
-        {{ form_row(form.file, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    {{ form_end(form) }}
-</turbo-frame>
+{% block body %}
+
+    {{ include('contacts/form.html.twig') }}
+
+{% endblock %}
+
