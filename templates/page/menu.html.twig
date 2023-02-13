@@ -1,57 +1,65 @@
-<nav class="navbar navbar-expand-lg bg-light shadow-lg">
-    <div class="container">
-        <a class="navbar-brand" href="{{ path('app_home_page') }}">
-            <img src="{{ asset('build/images/logo.png') }}" class="logo img-fluid" alt="Kind Heart Charity">
-            <span>
-                        Kind Heart Charity
-                        <small>Non-profit Organization</small>
-                    </span>
-        </a>
+<div
+        {{ stimulus_controller('modal') }}
+>
+    <nav class="navbar navbar-expand-lg bg-light shadow-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('app_home_page') }}">
+                <img src="{{ asset('build/images/logo.png') }}" class="logo img-fluid" alt="Kind Heart Charity">
+                <span>
+                            Kind Heart Charity
+                            <small>Non-profit Organization</small>
+                        </span>
+            </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_home_page') }}">{{ 'Home' }}</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_songs') }}">{{ 'Songs' }}</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_contacts_page') }}">{{ 'Contacts' }}</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_products_page') }}">{{ 'Products' }}</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_cart_page') }}">{{ 'Cart' }}</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ app.user ? path('app_logout') : path('app_login') }}">{{ app.user ? 'Logout' : 'Login' }}</a>
-                </li>
-                {% if app.user is null%}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_register') }}">{{ 'Register' }}</a>
+                        <a class="nav-link" href="{{ path('app_home_page') }}">{{ 'Home' }}</a>
                     </li>
-                {% endif %}
-                {% if app.user %}
+
                     <li class="nav-item">
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a class="nav-link" href="{{ path('app_admin_page') }}">{{ 'Admin' }}</a>
-                        {% else %}
-                            <a class="nav-link" href="{{ path('app_profile_page') }}">{{ 'My profile' }}</a>
-                        {% endif %}
+                        <a class="nav-link" href="{{ path('app_songs') }}">{{ 'Songs' }}</a>
                     </li>
-                {% endif %}
-            </ul>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="" data-action="click->modal#openModel">{{ 'Contacts' }}</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_products_page') }}">{{ 'Products' }}</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_cart_page') }}">{{ 'Cart' }}</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ app.user ? path('app_logout') : path('app_login') }}">{{ app.user ? 'Logout' : 'Login' }}</a>
+                    </li>
+                    {% if app.user is null%}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_register') }}">{{ 'Register' }}</a>
+                        </li>
+                    {% endif %}
+                    {% if app.user %}
+                        <li class="nav-item">
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a class="nav-link" href="{{ path('app_admin_page') }}">{{ 'Admin' }}</a>
+                            {% else %}
+                                <a class="nav-link" href="{{ path('app_profile_page') }}">{{ 'My profile' }}</a>
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
+    {{ include('_modalForm.html.twig', {
+        modalSrc: path('app_contacts_form_page'),
+        frameId: 'contacts_page_form'
+    }) }}
+</div>

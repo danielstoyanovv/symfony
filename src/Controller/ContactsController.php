@@ -12,6 +12,9 @@ use App\Service\SendWithTemplate;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @Route("/contacts")
+ */
 class ContactsController extends AbstractController
 {
     /**
@@ -21,7 +24,7 @@ class ContactsController extends AbstractController
      * @param LoggerInterface $logger
      * @param Filesystem $filesystem
      * @return Response
-     * @Route("/contacts", name="app_contacts_page", methods={"GET", "POST"})
+     * @Route("", name="app_contacts_page", methods={"POST"})
      */
     public function index(Request  $request, SendWithTemplate $sendEmail, LoggerInterface $logger, Filesystem $filesystem): Response
     {
@@ -67,6 +70,25 @@ class ContactsController extends AbstractController
             $logger->error($exception->getMessage());
         }
         return $this->renderForm('contacts/index.html.twig', [
+                'form' => $form
+            ]
+        );
+    }
+
+    /**
+     * index
+     * @param Request $request
+     * @param SendWithTemplate $sendEmail
+     * @param LoggerInterface $logger
+     * @param Filesystem $filesystem
+     * @return Response
+     * @Route("/form", name="app_contacts_form_page", methods={"GET"})
+     */
+    public function form(Request  $request, SendWithTemplate $sendEmail, LoggerInterface $logger, Filesystem $filesystem): Response
+    {
+        $form = $this->createForm(ContactsType::class);
+
+        return $this->renderForm('contacts/form.html.twig', [
             'form' => $form
         ]);
     }
