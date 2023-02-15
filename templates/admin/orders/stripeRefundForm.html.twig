@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('stripe_refund') }}">
+    <input type="hidden" name="paymentNumber" value="{{  order.paymentData }}">
+    <input type="submit" value="{{ 'Refund payment' }}">
+</form>

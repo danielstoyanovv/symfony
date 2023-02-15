@@ -16,4 +16,10 @@ interface StripeInterface
      * @return array
      */
     public function getLineItemsData(int $cartId): array;
+
+    /**
+     * @param string $paymentNumber
+     * @return mixed
+     */
+    public function refund(string $paymentNumber);
 }

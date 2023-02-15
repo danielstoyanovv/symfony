@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Cart;
+use App\Entity\Order;
 use App\Message\Command\CreateOrder;
 use App\Service\StripeInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,10 +32,16 @@ class StripeController extends AbstractController
      */
     private $stripe;
 
-    public function __construct(LoggerInterface $logger, StripeInterface $stripe)
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    public function __construct(LoggerInterface $logger, StripeInterface $stripe, EntityManagerInterface $entityManager)
     {
         $this->logger = $logger;
         $this->stripe = $stripe;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -56,7 +63,7 @@ class StripeController extends AbstractController
                     $this->addFlash('success', 'The payment was successful');
                     if ($cart = $entityManager->getRepository(Cart::class)->find($request->getSession()->get('cart_id'))) {
                         $messageBus->dispatch(
-                            new CreateOrder($cart->getId(), strtoupper($session->status) ?? '', 'Stripe')
+                            new CreateOrder($cart->getId(), strtoupper($session->status) ?? '', 'Stripe', $session->payment_intent ?? '')
                         );
                         $entityManager->remove($cart);
                         $entityManager->flush();
@@ -104,6 +111,32 @@ class StripeController extends AbstractController
             $this->logger->error($exception->getMessage());
         }
 
+        return $this->redirectToRoute('app_home_page');
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     * @Route("/refund", name="stripe_refund", methods={"POST"})
+     */
+    public function refund(Request $request): Response
+    {
+        try {
+            if (!empty($request->get('paymentNumber'))) {
+                $refundData = $this->stripe->refund($request->get('paymentNumber'));
+                if (!empty($refundData->status) && $refundData->status ===  'succeeded') {
+                    $this->addFlash('success', 'Payment was refunded');
+                    if ($order = $this->entityManager->getRepository(Order::class)->findOneBy(['paymentData' => $request->get('paymentNumber')])) {
+                        $order->setStatus('REFUND');
+                        $this->entityManager->persist($order);
+                        $this->entityManager->flush();
+                    }
+                    return $this->redirect($request->headers->get('referer'));
+                }
+            }
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage());
+        }
         return $this->redirectToRoute('app_home_page');
     }
 }

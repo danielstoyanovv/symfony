@@ -35,7 +35,8 @@ class CreateOrderHandler implements MessageHandlerInterface
             $order =  new Order();
             $order->setTotal($cart->getTotal())
                 ->setStatus($createOrder->getPaymentStatus())
-                ->setPaymentMethod($createOrder->getPaymentMethod());
+                ->setPaymentMethod($createOrder->getPaymentMethod())
+                ->setPaymentData($createOrder->getPaymentData());
 
             $this->entityManager->persist($order);
             $this->entityManager->flush();

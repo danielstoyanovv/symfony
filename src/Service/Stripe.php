@@ -71,4 +71,16 @@ class Stripe implements StripeInterface
 
         return $data;
     }
+
+    /**
+     * @param string $paymentNumber
+     * @return \Stripe\Refund
+     * @throws \Stripe\Exception\ApiErrorException
+     */
+    public function refund(string $paymentNumber)
+    {
+        $stripe = new StripeClient('sk_test_51MbKefG3ggaQ2SPfczpyzWwktZaWBuCxrDG7VFiA6wsPplY7pl3ed0FgtUveC3PGLzfDRVWCzoreLXHi82s9nbya00lbQGXKMd');
+
+        return $stripe->refunds->create(['payment_intent' => $paymentNumber]);
+    }
 }

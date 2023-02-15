@@ -43,5 +43,8 @@
         </table>
     {% endif %}
     <a type="button" class="btn btn-warning" href="{{ path('app_admin_orders') }}">{{ 'Back' }}</a>
+    {% if order.paymentMethod == 'Stripe' and order.status == 'COMPLETE' and order.paymentData is not null %}
+        {{ include('admin/orders/stripeRefundForm.html.twig') }}
+    {% endif %}
 
 {% endblock %}

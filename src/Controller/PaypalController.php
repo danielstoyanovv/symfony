@@ -55,7 +55,7 @@ class PaypalController extends AbstractController
                 $captureResponse = $this->paypal->capture($request->get('token'), $paypalApiUrl, $this->getToken($request, $paypalApiUrl, $paypaAuthorizationCode));
                 if ($cart = $entityManager->getRepository(Cart::class)->find($request->getSession()->get('cart_id'))) {
                     $messageBus->dispatch(
-                        new CreateOrder($cart->getId(), $captureResponse['status'] ?? '', 'Paypal')
+                        new CreateOrder($cart->getId(), $captureResponse['status'] ?? '', 'Paypal', '')
                     );
                     $entityManager->remove($cart);
                     $entityManager->flush();
