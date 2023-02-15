@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\Payment\PaymentInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,8 +33,16 @@ class CheckoutController extends AbstractController
                     $paymentClass = 'App' . DIRECTORY_SEPARATOR . 'Service' . DIRECTORY_SEPARATOR . 'Payment'
                         . DIRECTORY_SEPARATOR . ucfirst($paymentMethod);
                     if (class_exists($paymentClass)) {
+                        
                         $paymentClassInstance = new $paymentClass($urlGenerator);
-                        return $paymentClassInstance->processPayment($paymentTotal);
+
+                        if ($paymentClassInstance instanceof PaymentInterface) {
+                            return $paymentClassInstance->processPayment($paymentTotal);
+                        }
+                        throw $this->createNotFoundException(sprintf(
+                            'Class: %s is not a valid payment class',
+                            $paymentClass
+                        ));
                     }
                 }
             }

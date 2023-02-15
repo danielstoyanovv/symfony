@@ -41,11 +41,12 @@
         {{ 'Total' }}: <b>{{ cart.total }}</b>
 
         {% if cart.total > 0 %}
-            <form method="post" action="{{ path('app_checkout_page') }}">
+            <form method="post" action="{{ path('app_checkout_page') }}" data-turbo="false">
                 <input type="hidden" name="payment_total" value="{{ cart.total }}">
                 <label for="payment_method">{{ 'Payment method' }}</label>
                 <select name="payment_method">
                     <option value="paypal">{{ 'Paypal' }}</option>
+                    <option value="stripe">{{ 'Stripe' }}</option>
                 </select>
                 <button type="submit" class="btn btn-success">{{ 'Pay' }}</button>
             </form>

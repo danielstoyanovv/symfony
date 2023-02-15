@@ -5,7 +5,7 @@ namespace App\Service\Payment;
 use App\Checkout\Form;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class Paypal implements PaymentInterface
+class Stripe implements PaymentInterface
 {
     use Form;
 
@@ -25,6 +25,6 @@ class Paypal implements PaymentInterface
      */
     public function processPayment(int $paymentTotal): void
     {
-        $this->getForm($paymentTotal, $this->urlGenerator->generate('paypal_pay', [], 0));
+        $this->getForm($paymentTotal, $this->urlGenerator->generate('stripe_pay', [], 0));
     }
 }

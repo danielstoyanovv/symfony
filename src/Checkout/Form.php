@@ -2,14 +2,14 @@
 
 namespace App\Checkout;
 
-trait PaypalForm
+trait Form
 {
     /**
      * @param float $paymentTotal
      * @param string $actionUrl
      * @return void
      */
-    public function getPaypalForm(float $paymentTotal, string $actionUrl): void
+    public function getForm(float $paymentTotal, string $actionUrl): void
     {
         $formHtml = <<<HTML
 <form action= '$actionUrl' method='POST' id='form' style='display:none'>
