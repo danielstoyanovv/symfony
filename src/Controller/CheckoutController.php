@@ -33,7 +33,6 @@ class CheckoutController extends AbstractController
                     $paymentClass = 'App' . DIRECTORY_SEPARATOR . 'Service' . DIRECTORY_SEPARATOR . 'Payment'
                         . DIRECTORY_SEPARATOR . ucfirst($paymentMethod);
                     if (class_exists($paymentClass)) {
-                        
                         $paymentClassInstance = new $paymentClass($urlGenerator);
 
                         if ($paymentClassInstance instanceof PaymentInterface) {
