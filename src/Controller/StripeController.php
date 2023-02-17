@@ -122,21 +122,57 @@ class StripeController extends AbstractController
     public function refund(Request $request): Response
     {
         try {
-            if (!empty($request->get('paymentNumber'))) {
-                $refundData = $this->stripe->refund($request->get('paymentNumber'));
-                if (!empty($refundData->status) && $refundData->status ===  'succeeded') {
+            if (!empty($request->get('paymentNumber') && !empty($request->get('amount')))) {
+                if ($order = $this->entityManager->getRepository(Order::class)->findOneBy(['paymentData' => $request->get('paymentNumber')])) {
+                    $amount = $request->get('amount');
+                    if ($amount > $order->getTotal()) {
+                        $this->addFlash('error', "You can't refund more than your order total");
+
+                        return $this->redirectToRoute('app_admin_orders');
+                    }
+
                     $this->addFlash('success', 'Payment was refunded');
-                    if ($order = $this->entityManager->getRepository(Order::class)->findOneBy(['paymentData' => $request->get('paymentNumber')])) {
-                        $order->setStatus('REFUND');
+
+                    $refundData = $this->stripe->refund($request->get('paymentNumber'), $amount);
+                    if (!empty($refundData->status) && $refundData->status ===  'succeeded') {
+                        $order = $this->handleRefundData($request, $amount, $order);
+
                         $this->entityManager->persist($order);
                         $this->entityManager->flush();
+
+                        return $this->redirect($request->headers->get('referer'));
                     }
-                    return $this->redirect($request->headers->get('referer'));
                 }
             }
         } catch (\Exception $exception) {
+            die($exception->getMessage());
             $this->logger->error($exception->getMessage());
         }
+
         return $this->redirectToRoute('app_home_page');
+    }
+
+    /**
+     * @param Request $request
+     * @param float $amount
+     * @param Order $order
+     * @return Order
+     * @throws \Stripe\Exception\ApiErrorException
+     */
+    private function handleRefundData(Request $request, float $amount, Order $order): Order
+    {
+        if ($amount == $order->getTotal()) {
+            $order->setStatus('REFUND');
+        } elseif ($amount < $order->getTotal() && $order->getStatus() != 'PARTLY REFUND') {
+            $order->setStatus('PARTLY REFUND');
+            $order->setRefundAmount($amount);
+        } elseif ($amount + $order->getRefundAmount() < $order->getTotal() && $order->getStatus() == 'PARTLY REFUND') {
+            $order->setRefundAmount($amount + $order->getRefundAmount());
+        } elseif ($amount + $order->getRefundAmount() == $order->getTotal() && $order->getStatus() == 'PARTLY REFUND') {
+            $order->setStatus('REFUND');
+            $order->setRefundAmount($amount + $order->getRefundAmount());
+        }
+
+        return $order;
     }
 }

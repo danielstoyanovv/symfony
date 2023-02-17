@@ -48,6 +48,11 @@ class Order
      */
     private $paymentData;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $refundAmount;
+
     public function __construct()
     {
         $this->orderItem = new ArrayCollection();
@@ -132,6 +137,18 @@ class Order
     public function setPaymentData(?string $paymentData): self
     {
         $this->paymentData = $paymentData;
+
+        return $this;
+    }
+
+    public function getRefundAmount(): ?float
+    {
+        return $this->refundAmount;
+    }
+
+    public function setRefundAmount(?float $refundAmount): self
+    {
+        $this->refundAmount = $refundAmount;
 
         return $this;
     }

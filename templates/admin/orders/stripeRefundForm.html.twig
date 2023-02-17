@@ -1,4 +1,14 @@
-<form method="post" action="{{ path('stripe_refund') }}">
-    <input type="hidden" name="paymentNumber" value="{{  order.paymentData }}">
-    <input type="submit" value="{{ 'Refund payment' }}">
-</form>
+{% block body %}
+    <turbo-frame id="stripe_refund_form">
+        <form method="post" action="{{ path('stripe_refund') }}">
+            <input type="hidden" name="paymentNumber" value="{{  order.paymentData }}">
+            {{ 'Amount' }}
+            {% if order.status == 'PARTLY REFUND' %}
+                <input type="text" name="amount" value="{{ order.total - order.refundAmount }}" }}>
+            {% else %}
+                <input type="text" name="amount" value="{{ order.total }}" }}>
+            {% endif %}
+            <input type="submit" value="{{ 'Refund payment' }}">
+        </form>
+    </turbo-frame>
+{% endblock %}

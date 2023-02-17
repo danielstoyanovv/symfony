@@ -49,4 +49,16 @@ class OrdersController extends AbstractController
             'order' => $order
         ]);
     }
+
+    /**
+     * @param Order $order
+     * @return Response
+     * @Route("/{id}/stripe_refund_form", name="app_admin_orders_stripe_refund_form", methods={"GET"})
+     */
+    public function stripeRefundForm(Order $order): Response
+    {
+        return $this->render('admin/orders/stripeRefundForm.html.twig', [
+            'order' => $order
+        ]);
+    }
 }

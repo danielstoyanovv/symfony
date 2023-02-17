@@ -10,6 +10,7 @@
         <p>{{ 'Total' }} <b>{{ order.total }}</b></p>
         <p>{{ 'Status'}} <b>{{ order.status }}</b></p>
         <p>{{ 'Payment method'}} <b>{{ order.paymentMethod }}</b></p>
+        <p>{{ 'Refund amount'}} <b>{{ order.refundAmount }}</b></p>
         <p>
             {{ 'Products' }}
         </p>
@@ -42,9 +43,18 @@
             </tbody>
         </table>
     {% endif %}
-    <a type="button" class="btn btn-warning" href="{{ path('app_admin_orders') }}">{{ 'Back' }}</a>
-    {% if order.paymentMethod == 'Stripe' and order.status == 'COMPLETE' and order.paymentData is not null %}
-        {{ include('admin/orders/stripeRefundForm.html.twig') }}
+    <a type="button" class="btn btn-warning m-1 float-lg-start" href="{{ path('app_admin_orders') }}">{{ 'Back' }}</a>
+    {% if order.paymentMethod == 'Stripe' and order.status != 'REFUND' and order.paymentData is not null %}
+        <div
+        {{ stimulus_controller('modal') }}
+        >
+            <a href="" class="btn btn-dark m-1 float-lg-start" data-action="click->modal#openModel">{{ 'Refund' }}</a>
+
+            {{ include('_modalForm.html.twig', {
+                modalSrc: path('app_admin_orders_stripe_refund_form', {'id': order.id}),
+                frameId: 'stripe_refund_form'
+            }) }}
+        </div>
     {% endif %}
 
 {% endblock %}

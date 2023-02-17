@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Cart;
+use App\Entity\Order;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\StripeClient;
@@ -74,13 +75,14 @@ class Stripe implements StripeInterface
 
     /**
      * @param string $paymentNumber
-     * @return \Stripe\Refund
+     * @param float $amount
+     * @return mixed|\Stripe\Refund|void
      * @throws \Stripe\Exception\ApiErrorException
      */
-    public function refund(string $paymentNumber)
+    public function refund(string $paymentNumber, float $amount)
     {
         $stripe = new StripeClient('sk_test_51MbKefG3ggaQ2SPfczpyzWwktZaWBuCxrDG7VFiA6wsPplY7pl3ed0FgtUveC3PGLzfDRVWCzoreLXHi82s9nbya00lbQGXKMd');
 
-        return $stripe->refunds->create(['payment_intent' => $paymentNumber]);
+        return $stripe->refunds->create(['payment_intent' => $paymentNumber, 'amount' => $amount * 100]);
     }
 }

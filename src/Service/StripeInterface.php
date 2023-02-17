@@ -19,7 +19,9 @@ interface StripeInterface
 
     /**
      * @param string $paymentNumber
-     * @return mixed
+     * @param float $amount
+     * @return mixed|\Stripe\Refund|void
+     * @throws \Stripe\Exception\ApiErrorException
      */
-    public function refund(string $paymentNumber);
+    public function refund(string $paymentNumber, float $amount);
 }
