@@ -131,10 +131,9 @@ class StripeController extends AbstractController
                         return $this->redirectToRoute('app_admin_orders');
                     }
 
-                    $this->addFlash('success', 'Payment was refunded');
-
                     $refundData = $this->stripe->refund($request->get('paymentNumber'), $amount);
                     if (!empty($refundData->status) && $refundData->status ===  'succeeded') {
+                        $this->addFlash('success', 'Payment was refunded');
                         $order = $this->handleRefundData($request, $amount, $order);
 
                         $this->entityManager->persist($order);
@@ -145,7 +144,6 @@ class StripeController extends AbstractController
                 }
             }
         } catch (\Exception $exception) {
-            die($exception->getMessage());
             $this->logger->error($exception->getMessage());
         }
 
