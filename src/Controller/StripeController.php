@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Stripe\StripeClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -127,8 +128,9 @@ class StripeController extends AbstractController
                     $amount = $request->get('amount');
                     if ($amount > $order->getTotal()) {
                         $this->addFlash('error', "You can't refund more than your order total");
-
-                        return $this->redirectToRoute('app_admin_orders');
+                        $response = new RedirectResponse($request->headers->get('referer'));
+                        $response->setStatusCode(422);
+                        return $response;
                     }
 
                     $refundData = $this->stripe->refund($request->get('paymentNumber'), $amount);
