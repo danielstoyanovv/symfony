@@ -163,6 +163,7 @@ class StripeController extends AbstractController
     {
         if ($amount == $order->getTotal()) {
             $order->setStatus('REFUND');
+            $order->setRefundAmount($amount);
         } elseif ($amount < $order->getTotal() && $order->getStatus() != 'PARTLY REFUND') {
             $order->setStatus('PARTLY REFUND');
             $order->setRefundAmount($amount);
