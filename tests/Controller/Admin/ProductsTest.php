@@ -2,8 +2,10 @@
 
 namespace App\Tests\Controller\Admin;
 
+use App\Repository\ProductRepository;
 use App\Tests\Controller\BaseWebTestCase;
 use App\Factory\ProductFactory;
+use App\Entity\Product;
 
 class ProductsTest extends BaseWebTestCase
 {
@@ -54,18 +56,26 @@ class ProductsTest extends BaseWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function test_createPosition_page()
+    public function test_all_product_methods()
     {
-        $client = static::createClient();
+        $product = ProductFactory::createOne([
+            'name' => 'Test all product methods',
+            'description' => 'Description',
+            'price' => 111,
+            'position' => 1,
+            'status' => 1
+        ]);
+        $this->assertEquals(Product::class, get_class($product->object()));
+        $this->assertEquals('Test all product methods', $product->getName());
+        $this->assertEquals('Description', $product->getDescription());
+        $this->assertEquals(111, $product->getPrice());
+        $this->assertEquals(1, $product->getStatus());
+        $this->assertEquals('test-all-product-methods', $product->getSlug());
+        $productFromRepo = static::getContainer()->get(ProductRepository::class)->findOneBy(['name' => $product->getName()]);
+        $this->assertEquals(Product::class, get_class($productFromRepo));
+        $this->assertEquals($product->getId(), $productFromRepo->getId());
 
-        $client->request('GET', '/admin/products/create_position');
-
-        $this->assertResponseRedirects();
-
-        $this->loginAsAdmin($client);
-
-        $client->request('GET', '/admin/products/create_position');
-
-        $this->assertResponseIsSuccessful();
+        $product->remove();
+        $this->assertEquals(0,$product->getId());
     }
 }

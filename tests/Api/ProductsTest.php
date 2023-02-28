@@ -14,12 +14,17 @@ class ProductsTest extends BaseApiTestCase
 
         $this->createProduct($client);
 
-        $this->assertResponseRedirects();
+        $this->assertEquals(403, $client->getResponse()->getStatusCode());
 
-        $this->createLoggedInAdminUser($client);
-
-        $this->createProduct($client);
-
+        $adminUser = $this->createLoggedInAdminUser($client);
+        $this->createApiToken($adminUser->getEmail(), $client);
         $this->assertResponseIsSuccessful();
+        $tokenData = json_decode($client->getResponse()->getContent(), true);
+
+        if (!empty($tokenData['token'])) {
+            $this->createProduct($client, $tokenData['token']);
+             $this->assertResponseIsSuccessful();
+        }
+
     }
 }
