@@ -13,8 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *     collectionOperations={"get", "post"},
  *     itemOperations={
-            "get",
- *          "put"
+            "get"
  *     },
  *     normalizationContext={"groups"={"file:read"}},
  *     denormalizationContext={"groups"={"file:write"}}
@@ -41,19 +40,19 @@ class File
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"file:read", "file:write", "product:read"})
+     * @Groups({"file:read", "product:read"})
      */
     private $mime;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"file:read", "file:write", "product:read"})
+     * @Groups({"file:read", "product:read"})
      */
     private $size;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"file:read", "file:write", "product:read"})
+     * @Groups({"file:read", "product:read"})
      */
     private $originalName;
 
@@ -65,9 +64,19 @@ class File
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"file:read", "file:write", "product:read"})
+     * @Groups({"file:read", "product:read"})
      */
     private $type;
+
+    /**
+     * @Groups({"file:write"})
+     */
+    public $content;
+
+    /**
+     * @Groups({"file:write"})
+     */
+    public $productName;
 
     public function getId(): ?int
     {
