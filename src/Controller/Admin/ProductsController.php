@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\File;
 use App\Entity\Product;
-use App\Enum\Flash;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -17,6 +16,7 @@ use App\Form\ProductType;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Service\UploaderInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * @IsGranted("ROLE_ADMIN")
@@ -51,10 +51,11 @@ class ProductsController extends AbstractController
      * @param LoggerInterface $logger
      * @param UploaderInterface $uploader
      * @param MessageBusInterface $messageBus
+     * @param CacheInterface $cache
      * @return Response
      * @Route("/create", name="app_admin_products_create", methods={"GET", "POST"})
      */
-    public function create(Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus): Response
+    public function create(Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus, CacheInterface $cache): Response
     {
         try {
             $manager->beginTransaction();
@@ -77,6 +78,7 @@ class ProductsController extends AbstractController
                 $manager->flush();
                 $manager->commit();
                 $this->addFlash('success', "Product was created");
+                $cache->clear('products_page');
 
                 return $this->redirectToRoute('app_admin_products');
             }
@@ -98,10 +100,11 @@ class ProductsController extends AbstractController
      * @param LoggerInterface $logger
      * @param UploaderInterface $uploader
      * @param MessageBusInterface $messageBus
+     * @param CacheInterface $cache
      * @return Response
      * @Route("/update/{slug}", name="app_admin_products_update", methods={"GET", "POST"})
      */
-    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus): Response
+    public function update(Product $product, Request $request, EntityManagerInterface $manager, LoggerInterface $logger, UploaderInterface $uploader, MessageBusInterface $messageBus, CacheInterface  $cache): Response
     {
         try {
             $manager->beginTransaction();
@@ -121,6 +124,8 @@ class ProductsController extends AbstractController
                 $manager->flush();
                 $manager->commit();
                 $this->addFlash('success', "Product was updated");
+                $cache->clear('products_page');
+
 
                 return $this->redirectToRoute('app_admin_products');
             }
@@ -158,10 +163,11 @@ class ProductsController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param LoggerInterface $logger
+     * @param CacheInterface $cache
      * @return Response
      * @Route("/save_position", name="app_admin_products_save_position", methods={"POST"})
      */
-    public function savePosition(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
+    public function savePosition(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger, CacheInterface $cache): Response
     {
         try {
             $entityManager->beginTransaction();
@@ -177,6 +183,7 @@ class ProductsController extends AbstractController
                     }
                     $entityManager->commit();
                     $result = ['success' => 1];
+                    $cache->clear('products_page');
                 }
             }
         } catch (\Exception $exception) {

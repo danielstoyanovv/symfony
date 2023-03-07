@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Cache\RedisManagerInterface;
 use App\Entity\Song;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\RatingData;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 class HomeController extends AbstractController
@@ -16,13 +16,11 @@ class HomeController extends AbstractController
     /**
      * index
      * @param EntityManagerInterface $entityManager
-     * @param RedisManagerInterface $redisManager
      * @return Response
      * @Route("", name="app_home_page")
      */
-    public function index(EntityManagerInterface $entityManager, RedisManagerInterface $redisManager): Response
+    public function index(EntityManagerInterface $entityManager, CacheInterface $cache): Response
     {
-        $cache = $redisManager->getAdapter();
         $cache->get('home_page', function (ItemInterface $item) use ($entityManager) {
             $item->expiresAfter(3600);
 

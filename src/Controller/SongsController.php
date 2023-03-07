@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Psr\Log\LoggerInterface;
-use App\Cache\RedisManagerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * @Route("/songs")
@@ -47,12 +47,12 @@ class SongsController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param LoggerInterface $logger
      * @param MessageBusInterface $messageBus
-     * @param RedisManagerInterface $redisManager
+     * @param CacheInterface $cache
      * @IsGranted("ROLE_USER")
      * @return Response
      * @Route("/songs_vote", name="app_songs_vote", methods={"POST"})
      */
-    public function vote(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger, MessageBusInterface $messageBus, RedisManagerInterface $redisManager): Response
+    public function vote(Request $request, EntityManagerInterface $entityManager, LoggerInterface $logger, MessageBusInterface $messageBus, CacheInterface $cache): Response
     {
         $result = ['result' => 0];
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -69,7 +69,6 @@ class SongsController extends AbstractController
 
                         $entityManager->commit();
                         $result = ['success' => 1];
-                        $cache = $redisManager->getAdapter();
                         $cache->clear('home_page');
                     } catch(\Exception $exception) {
                         $entityManager->rollback();

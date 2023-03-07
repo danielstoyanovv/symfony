@@ -2,27 +2,26 @@
 
 namespace App\Listeners;
 
-use App\Cache\RedisManagerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class LogoutListener implements EventSubscriberInterface
 {
     /**
-     * @var RedisManagerInterface
+     * @var CacheInterface
      */
-    private $redisManager;
+    private $cache;
 
     public function __construct(
-        RedisManagerInterface $redisManager
+        CacheInterface $cache
     ) {
-        $this->redisManager = $redisManager;
+        $this->cache = $cache;
     }
 
     public function onLogout(LogoutEvent $event): void
     {
-        $cache = $this->redisManager->getAdapter();
-        $cache->clear('home_page');
+        $this->cache->clear('home_page');
     }
 
     public static function getSubscribedEvents(): array
