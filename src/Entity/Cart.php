@@ -31,6 +31,11 @@ class Cart
      */
     private $cartItem;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $invoiceNumber;
+
     public function __construct()
     {
         $this->cartItem = new ArrayCollection();
@@ -79,6 +84,18 @@ class Cart
                 $cartItem->setCart(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getInvoiceNumber(): ?string
+    {
+        return $this->invoiceNumber;
+    }
+
+    public function setInvoiceNumber(?string $invoiceNumber): self
+    {
+        $this->invoiceNumber = $invoiceNumber;
 
         return $this;
     }

@@ -24,12 +24,18 @@ class CreateOrder
      */
     private $paymentData;
 
-    public function __construct(int $cartId, string $paymentStatus, string $paymentMethod, $paymentData)
+    /**
+     * @var string
+     */
+    private $invoiceNumber;
+
+    public function __construct(int $cartId, string $paymentStatus, string $paymentMethod, string $paymentData, string $invoiceNumber)
     {
         $this->cartId = $cartId;
         $this->paymentStatus = $paymentStatus;
         $this->paymentMethod = $paymentMethod;
         $this->paymentData = $paymentData;
+        $this->invoiceNumber = $invoiceNumber;
     }
 
     /**
@@ -62,5 +68,13 @@ class CreateOrder
     public function getPaymentData(): string
     {
         return $this->paymentData;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInvoiceNumber(): string
+    {
+        return $this->invoiceNumber;
     }
 }

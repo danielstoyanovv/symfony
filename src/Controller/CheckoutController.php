@@ -10,6 +10,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use App\Service\Payment\Paypal;
+use App\Service\Payment\Stripe;
+use App\Service\Payment\Epay;
 
 /**
  * @Route("/checkout")
@@ -32,22 +35,25 @@ class CheckoutController extends AbstractController
                     $paymentMethod = $request->get('payment_method');
                     $paymentTotal = $request->get('payment_total');
 
-                    $paymentClass = 'App' . DIRECTORY_SEPARATOR . 'Service' . DIRECTORY_SEPARATOR . 'Payment'
-                        . DIRECTORY_SEPARATOR . ucfirst($paymentMethod);
-                    $paymentClassFullDirAndName = $containerBag->get('kernel.project_dir') . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR .
-                        'Service' . DIRECTORY_SEPARATOR . 'Payment' . DIRECTORY_SEPARATOR . ucfirst($paymentMethod) .
-                        '.php';
-                    if (file_exists($paymentClassFullDirAndName)) {
-                        $paymentClassInstance = new $paymentClass($urlGenerator);
-
-                        if ($paymentClassInstance instanceof PaymentInterface) {
-                            return $paymentClassInstance->processPayment($paymentTotal);
-                        }
-                        throw $this->createNotFoundException(sprintf(
-                            'Class: %s is not a valid payment class',
-                            $paymentClass
-                        ));
+                    switch ($paymentMethod) {
+                        case "paypal":
+                            $paymentClassInstance = new Paypal($urlGenerator);
+                            break;
+                        case "stripe":
+                            $paymentClassInstance = new Stripe($urlGenerator);
+                            break;
+                        case "epay":
+                            $paymentClassInstance = new Epay($urlGenerator);
+                            break;
                     }
+
+                    if ($paymentClassInstance instanceof PaymentInterface) {
+                        return $paymentClassInstance->processPayment($paymentTotal);
+                    }
+                    throw $this->createNotFoundException(sprintf(
+                        'Class: %s is not a valid payment class',
+                        $paymentClassInstance
+                    ));
                 }
             }
         } catch (\Exception $exception) {

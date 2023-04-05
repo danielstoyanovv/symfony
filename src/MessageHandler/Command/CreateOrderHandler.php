@@ -4,7 +4,6 @@ namespace App\MessageHandler\Command;
 
 use App\Entity\Cart;
 use App\Entity\Order;
-use App\Entity\OrderItem;
 use App\Message\Command\CreateOrder;
 use App\Message\Command\CreateOrderItem;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,7 +35,8 @@ class CreateOrderHandler implements MessageHandlerInterface
             $order->setTotal($cart->getTotal())
                 ->setStatus($createOrder->getPaymentStatus())
                 ->setPaymentMethod($createOrder->getPaymentMethod())
-                ->setPaymentData($createOrder->getPaymentData());
+                ->setPaymentData($createOrder->getPaymentData())
+                ->setInvoiceNumber($createOrder->getInvoiceNumber());
 
             $this->entityManager->persist($order);
             $this->entityManager->flush();

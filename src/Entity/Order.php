@@ -53,6 +53,11 @@ class Order
      */
     private $refundAmount;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $invoiceNumber;
+
     public function __construct()
     {
         $this->orderItem = new ArrayCollection();
@@ -149,6 +154,18 @@ class Order
     public function setRefundAmount(?float $refundAmount): self
     {
         $this->refundAmount = $refundAmount;
+
+        return $this;
+    }
+
+    public function getInvoiceNumber(): ?string
+    {
+        return $this->invoiceNumber;
+    }
+
+    public function setInvoiceNumber(?string $invoiceNumber): self
+    {
+        $this->invoiceNumber = $invoiceNumber;
 
         return $this;
     }
